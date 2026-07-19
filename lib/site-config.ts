@@ -60,12 +60,12 @@ export const contactIntentActions: Record<ContactIntent, ContactAction> = {
 };
 export const primaryContactIntents: ContactIntent[] = ["estimate", "trailer"];
 export const services: Service[] = [
-  { title: "Residential junk removal", description: "Clear unwanted items, clutter, and project debris without doing the heavy lifting yourself.", contactIntent: "estimate" },
-  { title: "Commercial & industrial", description: "Practical removal support for businesses, facilities, job sites, and larger cleanup needs.", contactIntent: "general" },
-  { title: "Trailer rentals", description: "Ask about a trailer for a cleanup or project on your schedule. Availability and details are confirmed directly.", contactIntent: "trailer" },
+  { title: "Residential Junk Removal", description: "Clear unwanted items, clutter, and project debris without doing the heavy lifting yourself.", contactIntent: "estimate" },
+  { title: "Commercial & Industrial", description: "Practical removal support for businesses, facilities, job sites, and larger cleanup needs.", contactIntent: "general" },
+  { title: "Trailer Rentals", description: "Ask about a trailer for a cleanup or project on your schedule. Availability and details are confirmed directly.", contactIntent: "trailer" },
 ];
 export const faqItems: FAQItem[] = [
-  { question: "What is the minimum junk-removal charge?", answer: "Junk-removal jobs have a $140 minimum. Final pricing depends on the details of the job. Contact 319Junk for a free estimate." },
+  { question: "What is the minimum junk removal charge?", answer: "Junk removal jobs have a $140 minimum. Final pricing depends on the details of the job. Contact 319Junk for a free estimate." },
   { question: "How do I get an estimate?", answer: "Call or text 319-461-6329 with your location and a description of what needs to go. Photos can help the team understand the job. Estimates are free." },
   { question: "Do you handle the loading?", answer: "Yes. 319Junk handles the loading so you do not have to move everything to the curb first." },
   { question: "Do you offer same-day service?", answer: "Same-day or next-day service may be available depending on the schedule and job. Contact 319Junk to confirm current availability." },

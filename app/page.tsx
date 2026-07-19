@@ -43,7 +43,7 @@ export default function Home() {
                 <p className="hero-deck" data-hero-sequence>
                   <span>Junk removal for homes,</span>{" "}
                   <span>businesses, and industrial properties.</span>{" "}
-                  <span>Across Eastern and Southeast Iowa.</span>{" "}
+                  <span>Serving Eastern &amp; Southeast Iowa.</span>{" "}
                   <span>Free estimates available.</span>
                 </p>
                 <ContactActions location="hero" />
