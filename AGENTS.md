@@ -1,6 +1,6 @@
 # Agent instructions
 
-- Preserve the Next.js App Router/vinext architecture and Sites metadata.
+- Preserve the native Next.js App Router architecture and Vercel deployment compatibility.
 - `lib/site-config.ts` is the source of truth for business facts, contact behavior, navigation, FAQs, services, and work data.
 - `design.md` and CSS custom properties define the brand. Preserve the monochrome editorial-utility direction and supplied logo proportions.
 - Never invent owner details, address, hours, email, reviews, disposal claims, trailer specifications, item policies, or availability guarantees.

@@ -1,7 +1,7 @@
 export const SS_DEFAULTS = {
   activeId: "residential",
-  panelDurationMs: 300,
-  tabDurationMs: 250,
+  panelDurationMs: 260,
+  tabDurationMs: 280,
   borderRadiusPx: 0,
   spacingScale: 1,
   imageMode: "auto" as const,

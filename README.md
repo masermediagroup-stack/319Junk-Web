@@ -1,10 +1,10 @@
 # 319Junk website
 
-Production-ready single-page marketing site for 319Junk, serving Eastern and Southeast Iowa. Built with Next.js, TypeScript, Tailwind CSS, React, and the Sites-compatible vinext runtime.
+Production-ready single-page marketing site for 319Junk, serving Eastern and Southeast Iowa. Built with the native Next.js App Router, TypeScript, Tailwind CSS, and React for deployment on Vercel.
 
 ## Local development
 
-Requires Node 22.13 or newer.
+Requires Node 24.
 
 ```bash
 npm install
@@ -19,7 +19,7 @@ npm test
 All repeated business data and contact behavior lives in `lib/site-config.ts`.
 
 - `NEXT_PUBLIC_CONTACT_EMAIL`: verified owner email. Until provided, desktop estimate and trailer buttons visibly fall back to calling `319-461-6329`.
-- `NEXT_PUBLIC_SITE_URL`: final canonical domain. Until provided, the Sites URL is used.
+- `NEXT_PUBLIC_SITE_URL`: final canonical domain. Until provided, the stable Vercel project URL is used.
 
 Do not guess either value. The missing verified email is a launch blocker for email CTAs, though the site remains fully functional through calls and texts.
 
@@ -36,7 +36,7 @@ The Service Showcase uses owner-supplied 319Junk photography. Residential and Co
 
 ## Deployment and domain
 
-The project builds for Sites and remains Vercel-compatible. For Vercel, import the Git repository, set the two optional public environment variables, and deploy with the default Next.js settings. To connect a custom domain, add it in the hosting dashboard, follow the provided DNS records, then set `NEXT_PUBLIC_SITE_URL` to the final HTTPS origin and redeploy.
+The project builds natively for Vercel with the default Next.js settings. Set the two optional public environment variables in the Vercel project, then deploy. To connect a custom domain, add it in the hosting dashboard, follow the provided DNS records, set `NEXT_PUBLIC_SITE_URL` to the final HTTPS origin, and redeploy.
 
 ## Launch checklist
 

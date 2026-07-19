@@ -2,9 +2,11 @@
 
 ## Direction
 
-“Editorial utility” combines a field-manual directness with premium restraint. The Iowa-shaped logo is the central brand device. Oversized headlines, hard black rules, strict alignment, monochrome contrast, and purposeful whitespace communicate capability without the visual noise common to local-service templates.
+319Junk uses an editorial-utility system: field-manual directness with premium restraint. The Iowa-shaped logo is the central brand device. Oversized headlines, hard black rules, strict alignment, monochrome contrast, square geometry, and purposeful whitespace communicate capability without adopting the visual language of a generic local-service template.
 
-## Tokens
+The current calibration is `DESIGN_VARIANCE 7`, `MOTION_INTENSITY 5`, and `VISUAL_DENSITY 3`. This is an evolution of the established identity, not a visual overhaul.
+
+## Core tokens
 
 - Ink: `#090909`
 - Paper: `#FEFEFE`
@@ -12,33 +14,66 @@
 - Borders: `#D8D8D3`
 - Font: Geist Sans only
 - Weights: 400 for body copy, 600 for headings and UI, 800 for display and section headings
-- Semantic type scale: display, section, heading, large body, body, UI, caption, price, and phone
-- Content width: 1380px with fluid 20–64px gutters
-- Section spacing: fluid 76–132px
-- Controls: square, minimum 44px touch targets, 1–2px rules, no decorative rounding
+- Content width: 1380px with fluid 20px to 64px gutters
+- Section spacing: fluid 76px to 132px
+- Controls: square, minimum 44px touch target, 1px to 2px rules, no decorative rounding
 - Focus: 3px current-color outline with 4px offset
-- Motion: 180ms control feedback, 420ms structural transition, 700–1100ms coordinated entrances
+- Motion easing: `cubic-bezier(.23, 1, .32, 1)`
 
-Layout becomes single-column based on content needs at 1000px; mobile conversion patterns begin at 700px. Mobile is not a compressed desktop layout: CTAs stack, navigation becomes full-screen, and the Call/Text controls appear directly beneath the mobile menu links only while that menu is open.
+Paper is the only light interface color. Do not introduce pure white, cream, warm-white, or alternate light surfaces. All website text uses a solid foreground fill; do not use text stroke, transparent fills, outlined glyphs, or text-clipped backgrounds.
 
-The current design-taste calibration is design variance 6, motion intensity 4, and visual density 3. Desktop keeps the deliberate asymmetric hero composition; the mobile hero centers its heading, supporting copy, conversion actions, and phone line as one focused conversion block. Section introductions stack heading over explanation instead of forcing unrelated split-column alignment.
+## Icon system
 
-## Components and behavior
+The icon family began as ChatGPT Imagegen concepts and was translated into deterministic inline SVGs for production clarity. Icons use the interface’s current color, a 24px square viewBox, 1.8px strokes, blunt square caps, mitered joins, and no containing circles or decorative tiles. The family covers residential, commercial, trailer, phone, message, loading services, boxes, local team, and external action.
 
-Primary buttons invert to black; secondary buttons remain outlined. The Service Showcase uses a square tab row, one editorial image field, and a compact copy panel instead of a card grid. Its active tab uses the ink/paper tokens, its tab list scrolls horizontally inside the component on narrow screens, and Arrow keys plus Home/End change the active service. FAQ items continue to use rules instead of card containers. Residential and Commercial expose the pointer-, touch-, and keyboard-capable comparison control with an identical placeholder image on both sides; matched owner-approved same-project pairs must replace those placeholders before launch proof is claimed.
+Icons are reserved for contact-intent CTAs, Service Showcase tabs, mobile navigation, mobile Call/Text actions, and the external Facebook link. They remain decorative with `aria-hidden="true"`; adjacent visible labels preserve accessible names. Do not add icons to long-form content, FAQ rows, or footer navigation unless they improve a specific scanning problem.
 
-GSAP is limited to coordinated transform-and-opacity entrances and the two-line hamburger-to-X transition. Hover feedback remains CSS. All nonessential motion disappears under `prefers-reduced-motion`; content never depends on animation.
+The mobile menu contains Services, About, and FAQ followed by the Call/Text action row. A separate Contact menu item is intentionally omitted because the two direct contact actions are always present below the navigation. Mobile Call and Text actions share one visual treatment: paper background, ink text and icons, equal-width columns, and equal 56px target heights. Neither quick action receives primary emphasis.
 
-The service-highlight strip is a continuous, divider-free marquee. A single gap token controls every label interval, including the loop seam: 84px at the checked desktop width and 44px on mobile. Its duplicated visual sequence is hidden from assistive technology, and reduced-motion users receive a static, horizontally scrollable list instead of forced movement.
+## Layout and hierarchy
 
-The FAQ is a centered single-column composition: its desktop heading stays on one centered line above a constrained question list, then wraps naturally on small screens. The selected service tab uses paper-white text against the animated ink pill; inactive tabs remain transparent and gain a simple underline on hover.
+Document order is Hero, Services, About, FAQ, and Contact. Navigation follows that same sequence.
 
-FAQ answers open and close with a 420ms grid-height and vertical-position transition plus a shorter opacity fade. The button remains the disclosure control, `aria-expanded` and `aria-hidden` track its state, and the global reduced-motion rule removes the visible transition.
+- Hero: asymmetric landscape and conversion split, with the headline aligned to the logo field. The display heading uses a `.93` line-height ratio. The deck forms two intentional lines on desktop and four shorter lines on mobile. On mobile it occupies approximately one usable viewport beneath the header while keeping both CTAs visible.
+- Services: left-stacked introduction and a single Service Showcase. The highlight strip is the page's only perpetual animation.
+- About: split composition with the Iowa phone mark and three unnumbered process rows.
+- FAQ: centered introduction over a constrained disclosure list. FAQ content is immediately available and does not receive an entrance animation.
+- Contact: concentrated final conversion block with explicit actions and a highly readable phone number.
 
-Avoid gradients, glass effects, rounded card grids, generic icons, unsupported testimonials, busy parallax, scroll hijacking, cursor effects, and decorative 3D. Service Showcase imagery must remain owner-approved 319Junk photography, and comparison pairs must show the same project.
+The layout becomes single-column according to content needs near 1000px. Mobile conversion behavior begins at 700px: CTAs stack and navigation becomes a full-screen overlay.
 
-All website text uses a solid foreground fill. Do not use `text-stroke`, transparent text fills, outlined glyphs, hollow display type, or text-clipped backgrounds anywhere in the interface.
+## Motion tokens and rules
 
-White rule: `#FEFEFE` is the only white used for interface backgrounds, light text, borders, and gradient endpoints. Do not introduce pure white or off-white surface colors. Light sections all use the paper token without alternate cream, gray, or warm-white backgrounds.
+- Press feedback: `scale(.97)` over 125ms
+- High-frequency controls: 180ms to 200ms
+- CTA fill and color changes: 240ms
+- Panel transitions: 220ms to 280ms, with exits shorter than entrances
+- Marketing entrances: 550ms to 900ms
+- Mobile navigation: 200ms opacity and 12px translate
 
-Anti-slop rule: do not add eyebrow systems, section numbering, image pagination, decorative dots, version labels, status strips, fake metrics, gradient text, glows, glass effects, ornamental captions, scroll cues, or visible em/en dashes. Keep CTA labels consistent for each intent and keep every visual device tied to brand, hierarchy, navigation, or conversion.
+Meaningful entrances are limited to these moments:
+
+- Hero content rises 24px over 700ms in a top-to-bottom sequence: heading, deck, primary CTA, then secondary CTA. The sequence begins after 120ms and uses a 160ms stagger.
+- Landscape fades while settling from `scale(1.02)` over 900ms.
+- Hero logo fades while settling from `scale(.97)` over 800ms after a 220ms delay.
+- Section introductions rise 20px and fade once over 550ms.
+
+FAQ content, navigation, and frequently used controls remain immediately available. All nonessential movement is removed under `prefers-reduced-motion`. Hover-only effects are gated behind a fine-pointer media query. The service marquee becomes a static horizontal list for reduced-motion users.
+
+## Components and interaction
+
+Primary buttons invert to ink; secondary buttons stay outlined. CTA labels are intent-specific. Mobile actions use prefilled SMS. Desktop actions use prefilled email when `NEXT_PUBLIC_CONTACT_EMAIL` exists and explicit phone labels when it does not.
+
+The About Facebook link has no resting underline. Only the word “Facebook” receives a one-pixel line that reveals from left to right over 240ms on hover or keyboard focus, without changing layout.
+
+The mobile menu remains mounted so opening and closing can reverse cleanly. The two-line hamburger uses interruptible CSS transforms. The menu locks body scrolling, moves focus to the first link, contains Tab navigation, closes with Escape or navigation, and restores focus to the trigger.
+
+The Service Showcase keeps a square tab row, a single editorial image field, and a compact copy panel. Pointer changes use a zero-bounce shared-layout spring under 300ms. Arrow keys plus Home and End update selection without smooth scrolling or panel choreography. Panel changes use a short concurrent opacity and 3 percent vertical transition, with faster exits. Showcase CTAs act directly instead of scrolling to Contact.
+
+Residential and Commercial use matched, owner-approved before-and-after image pairs. The comparison slider updates its clip, divider, handle, and ARIA values directly in the DOM. Pointer capture is preserved, pointer movement is limited to one update per animation frame, and keyboard control supports Arrow keys, Shift increments, Home, and End.
+
+FAQ answers use the original 420ms grid-height and vertical transition with a 240ms opacity fade and `cubic-bezier(.2,.75,.25,1)` easing. FAQ disclosure buttons do not scale on press, keeping question titles visually fixed. The disclosure button owns state through `aria-expanded`, while the panel mirrors it with `aria-hidden`.
+
+## Guardrails
+
+Avoid gradients, glass effects, rounded card grids, generic decorative icons, unsupported testimonials, fake metrics, parallax, scroll hijacking, custom cursors, decorative 3D, additional marquees, and new business claims. Do not add eyebrow systems, section numbering, image pagination, decorative dots, version labels, status strips, ornamental captions, or scroll cues. Keep every visual device tied to brand, hierarchy, navigation, or conversion, and use only owner-approved 319Junk photography.

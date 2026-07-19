@@ -40,7 +40,7 @@ const servicePresentation = [
   },
   {
     id: "trailer-rentals",
-    label: "Trailer rentals",
+    label: "Trailer Rentals",
     image: {
       src: "/services/trailer-rentals.jpg",
       alt: "319Junk rental trailers overlooking an Iowa landscape",
@@ -59,6 +59,6 @@ export const SERVICE_ITEMS: ServiceItem[] = services.map((service, index) => {
     ...presentation,
     title: service.title,
     description: service.description,
-    cta: { label: service.cta, href: "#contact" },
+    contactIntent: service.contactIntent,
   };
 });

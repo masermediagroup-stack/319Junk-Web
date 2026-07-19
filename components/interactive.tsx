@@ -1,56 +1,105 @@
 "use client";
+
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import type { FAQItem } from "@/lib/site-config";
 import { siteConfig } from "@/lib/site-config";
+import { SiteIcon, type SiteIconName } from "@/components/site-icon";
+
+const focusableSelector = [
+  "a[href]",
+  "button:not([disabled])",
+  "[tabindex]:not([tabindex='-1'])",
+].join(",");
+
+const mobileNavIcons: Record<string, SiteIconName> = {
+  "#services": "services",
+  "#about": "team",
+  "#faq": "message",
+};
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const menuIcon = useRef<HTMLSpanElement>(null);
-  const menuTimeline = useRef<{ play: () => unknown; reverse: () => unknown; progress: (value: number) => unknown } | null>(null);
-  const openRef = useRef(open);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLElement>(null);
+  const restoreFocusRef = useRef<HTMLElement | null>(null);
 
-  useEffect(() => { document.body.classList.toggle("menu-open", open); return () => document.body.classList.remove("menu-open"); }, [open]);
-  useEffect(() => { openRef.current = open; }, [open]);
+  const closeMenu = () => setOpen(false);
 
   useEffect(() => {
-    let cancelled = false;
-    let cleanup = () => {};
-    void import("gsap").then(({ gsap }) => {
-      if (cancelled || !menuIcon.current) return;
-      const context = gsap.context(() => {
-        const lines = gsap.utils.toArray<HTMLElement>(".menu-line");
-        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const timeline = gsap.timeline({ paused: true, defaults: { duration: reduceMotion ? 0 : 0.32, ease: "power3.inOut" } })
-          .to(lines[0], { y: 0, rotation: 45 }, 0)
-          .to(lines[1], { y: 0, rotation: -45 }, 0);
-        timeline.progress(openRef.current ? 1 : 0);
-        menuTimeline.current = timeline;
-      }, menuIcon);
-      cleanup = () => { menuTimeline.current = null; context.revert(); };
+    document.body.classList.toggle("menu-open", open);
+
+    if (!open) {
+      restoreFocusRef.current?.focus();
+      restoreFocusRef.current = null;
+      return () => document.body.classList.remove("menu-open");
+    }
+
+    restoreFocusRef.current = menuButtonRef.current;
+    const focusFrame = requestAnimationFrame(() => {
+      menuRef.current?.querySelector<HTMLElement>(focusableSelector)?.focus();
     });
-    return () => { cancelled = true; cleanup(); };
-  }, []);
 
-  useEffect(() => {
-    if (open) menuTimeline.current?.play();
-    else menuTimeline.current?.reverse();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeMenu();
+        return;
+      }
+
+      if (event.key !== "Tab" || !menuRef.current) return;
+      const focusable = Array.from(
+        menuRef.current.querySelectorAll<HTMLElement>(focusableSelector),
+      ).filter((element) => !element.hasAttribute("disabled"));
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (!first || !last) return;
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      cancelAnimationFrame(focusFrame);
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.classList.remove("menu-open");
+    };
   }, [open]);
 
   return <header className="site-header">
     <a className="brand" href="#main" aria-label="319Junk home"><Image src="/brand/319junk-white.svg" alt="319Junk" width={150} height={93} priority /></a>
-    <a className="header-phone" href={siteConfig.phoneHref}><span>Call now</span><strong>{siteConfig.phoneDisplay}</strong></a>
+    <a className="header-phone" href={siteConfig.phoneHref}><span className="header-phone-label"><SiteIcon className="header-phone-icon" name="phone" size={14} /><span>Call now</span></span><strong>{siteConfig.phoneDisplay}</strong></a>
     <nav className="desktop-nav" aria-label="Main navigation">{siteConfig.navigation.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}<a className="nav-cta" href="#contact">Contact</a></nav>
-    <button className="menu-button" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen(!open)}>
+    <button
+      ref={menuButtonRef}
+      className="menu-button"
+      aria-expanded={open}
+      aria-controls="mobile-menu"
+      onClick={() => setOpen((current) => !current)}
+    >
       <span className="sr-only">{open ? "Close navigation" : "Open navigation"}</span>
-      <span className="menu-icon" ref={menuIcon} aria-hidden="true"><span className="menu-line" /><span className="menu-line" /></span>
+      <span className="menu-icon" aria-hidden="true"><span className="menu-line" /><span className="menu-line" /></span>
     </button>
-    <nav id="mobile-menu" className="mobile-nav" aria-label="Mobile navigation" hidden={!open}>
-      {siteConfig.navigation.map((item) => <a key={item.href} href={item.href} onClick={() => setOpen(false)}>{item.label}</a>)}
+    <nav
+      ref={menuRef}
+      id="mobile-menu"
+      className="mobile-nav"
+      aria-label="Mobile navigation"
+      aria-hidden={!open}
+      data-open={open}
+      inert={!open}
+    >
+      {siteConfig.navigation.map((item) => <a key={item.href} href={item.href} onClick={closeMenu}><SiteIcon className="mobile-nav-icon" name={mobileNavIcons[item.href] ?? "arrow-up-right"} /><span>{item.label}</span></a>)}
       <div className="mobile-menu-contact" aria-label="Quick contact">
-        <a href={siteConfig.phoneHref}>Call</a>
-        <a href={siteConfig.smsGeneralHref}>Text</a>
+        <a href={siteConfig.phoneHref}><SiteIcon name="phone" /><span>Call</span></a>
+        <a href={siteConfig.smsGeneralHref}><SiteIcon name="message" /><span>Text</span></a>
       </div>
     </nav>
   </header>;
@@ -58,7 +107,7 @@ export function SiteHeader() {
 
 export function FAQList({ items }: { items: FAQItem[] }) {
   const [open, setOpen] = useState(0);
-  return <div className="faq-list" data-reveal>{items.map((item, index) => <div className="faq-item" key={item.question}>
+  return <div className="faq-list">{items.map((item, index) => <div className="faq-item" key={item.question}>
     <h3><button aria-expanded={open === index} aria-controls={`faq-panel-${index}`} onClick={() => setOpen(open === index ? -1 : index)}><span>{item.question}</span><i aria-hidden="true">{open === index ? "−" : "+"}</i></button></h3>
     <div id={`faq-panel-${index}`} className="faq-panel" data-open={open === index} aria-hidden={open !== index}>
       <div className="faq-panel-inner"><p>{item.answer}</p></div>
@@ -68,26 +117,57 @@ export function FAQList({ items }: { items: FAQItem[] }) {
 
 export function MotionController({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    let cancelled = false;
-    let cleanup = () => {};
-    void import("gsap").then(({ gsap }) => {
-      if (cancelled || !root.current) return;
-      const context = gsap.context(() => {
-        const media = gsap.matchMedia();
-        media.add("(prefers-reduced-motion: no-preference)", () => {
-          gsap.from(".hero-copy > *", { y: 32, autoAlpha: 0, duration: 0.8, stagger: 0.08, ease: "power3.out", clearProps: "all" });
-          const heroLandscape = root.current?.querySelector(".hero-landscape");
-          if (heroLandscape) gsap.from(heroLandscape, { scale: 1.035, autoAlpha: 0, duration: 1.2, delay: 0.1, ease: "power3.out", clearProps: "all" });
-          const observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) { gsap.fromTo(entry.target, { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "power2.out", clearProps: "all" }); observer.unobserve(entry.target); } }), { threshold: 0.12 });
-          root.current?.querySelectorAll("[data-reveal]:not(.hero-copy)").forEach((el) => observer.observe(el));
-          return () => observer.disconnect();
-        });
-        cleanup = () => media.revert();
-      }, root);
-      cleanup = () => context.revert();
+    if (!root.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const animations: Animation[] = [];
+    const ease = "cubic-bezier(.23,1,.32,1)";
+    const animate = (
+      element: Element,
+      keyframes: Keyframe[],
+      options: KeyframeAnimationOptions,
+    ) => {
+      const animation = element.animate(keyframes, { fill: "backwards", ...options });
+      animations.push(animation);
+    };
+
+    root.current.querySelectorAll("[data-hero-sequence]").forEach((element, index) => {
+      animate(element, [
+        { opacity: 0, transform: "translateY(24px)" },
+        { opacity: 1, transform: "translateY(0)" },
+      ], { duration: 700, delay: 120 + index * 160, easing: ease });
     });
-    return () => { cancelled = true; cleanup(); };
+
+    const landscape = root.current.querySelector("[data-hero-landscape]");
+    if (landscape) animate(landscape, [
+      { opacity: 0, scale: 1.02 },
+      { opacity: 1, scale: 1 },
+    ], { duration: 900, easing: ease });
+
+    const logo = root.current.querySelector("[data-hero-logo]");
+    if (logo) animate(logo, [
+      { opacity: 0, scale: .97 },
+      { opacity: 1, scale: 1 },
+    ], { duration: 800, delay: 220, easing: ease });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        animate(entry.target, [
+          { opacity: 0, transform: "translateY(20px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ], { duration: 550, easing: ease });
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: .16 });
+
+    root.current.querySelectorAll("[data-section-intro]").forEach((element) => observer.observe(element));
+    return () => {
+      observer.disconnect();
+      animations.forEach((animation) => animation.cancel());
+    };
   }, []);
+
   return <div ref={root} className="motion-root">{children}</div>;
 }

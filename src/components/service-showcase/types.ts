@@ -8,7 +8,7 @@ export type ServiceItem = {
   label: string;
   title: string;
   description: string;
-  cta?: { label: string; href: string };
+  contactIntent?: ContactIntent;
   image: ServiceMedia;
   comparison?: {
     before: ServiceMedia;
@@ -17,6 +17,7 @@ export type ServiceItem = {
 };
 
 export type ServiceImageMode = "auto" | "comparison" | "image";
+export type ServiceChangeSource = "pointer" | "keyboard" | "programmatic";
 
 export type ServiceShowcaseProps = {
   items?: ServiceItem[];
@@ -32,3 +33,4 @@ export type ServiceShowcaseProps = {
   imageMode?: ServiceImageMode;
   className?: string;
 };
+import type { ContactIntent } from "@/lib/site-config";

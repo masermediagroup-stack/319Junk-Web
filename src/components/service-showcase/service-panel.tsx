@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
+import { ResponsiveContactLink } from "@/components/contact-actions";
 import { BeforeAfterSlider } from "./before-after-slider";
 import type { ServiceImageMode, ServiceItem } from "./types";
 
@@ -13,6 +14,7 @@ type ServicePanelProps = {
   reducedMotion: boolean;
   imageMode: ServiceImageMode;
   isFirstPaint: boolean;
+  instant: boolean;
 };
 
 function shouldShowComparison(
@@ -32,16 +34,14 @@ export function ServicePanel({
   reducedMotion,
   imageMode,
   isFirstPaint,
+  instant,
 }: ServicePanelProps) {
   const prefersReduced = useReducedMotion();
-  const reduce = reducedMotion || !!prefersReduced;
+  const reduce = reducedMotion || !!prefersReduced || instant;
   const showComparison = shouldShowComparison(item, imageMode);
-  const duration = reduce ? 0 : panelDurationMs / 1000;
-  const mediaDuration = reduce ? 0 : Math.max(duration, 0.42);
-  const mediaTransition = {
-    duration: mediaDuration,
-    ease: [0.22, 1, 0.36, 1] as const,
-  };
+  const enterDuration = reduce ? 0 : Math.min(panelDurationMs, 280) / 1000;
+  const exitDuration = reduce ? 0 : Math.min(panelDurationMs * .68, 190) / 1000;
+  const ease = [0.23, 1, 0.32, 1] as const;
 
   return (
     <div
@@ -55,14 +55,18 @@ export function ServicePanel({
           className="relative aspect-[4/3] min-w-0 overflow-hidden border border-[var(--ss-border)] bg-[var(--ss-hover)]"
           style={{ borderRadius: borderRadiusPx }}
         >
-          <AnimatePresence initial={false}>
+          <AnimatePresence initial={false} mode="sync">
             <motion.div
               key={`media-${item.id}`}
               className="absolute inset-0 will-change-transform"
-              initial={reduce ? { y: "0%" } : { y: "-100%" }}
-              animate={{ y: "0%" }}
-              exit={reduce ? { opacity: 0 } : { y: "100%" }}
-              transition={mediaTransition}
+              initial={reduce ? false : { opacity: 0, y: "3%" }}
+              animate={{ opacity: 1, y: "0%" }}
+              exit={{
+                opacity: 0,
+                y: reduce ? "0%" : "-1.5%",
+                transition: { duration: exitDuration, ease },
+              }}
+              transition={{ duration: enterDuration, ease }}
             >
               {showComparison && item.comparison ? (
                 <BeforeAfterSlider
@@ -88,21 +92,18 @@ export function ServicePanel({
           </AnimatePresence>
         </div>
 
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="popLayout" initial={false}>
           <motion.div
             key={`copy-${item.id}`}
             className="flex min-w-0 flex-col gap-[var(--ss-copy-gap)] md:pl-2"
-            initial={
-              reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }
-            }
-            animate={{ opacity: 1, y: 0 }}
-            exit={
-              reduce ? { opacity: 0, y: 0 } : { opacity: 0, y: 6 }
-            }
-            transition={{
-              duration,
-              ease: [0.22, 1, 0.36, 1],
+            initial={reduce ? false : { opacity: 0, y: "3%" }}
+            animate={{ opacity: 1, y: "0%" }}
+            exit={{
+              opacity: 0,
+              y: reduce ? "0%" : "-1.5%",
+              transition: { duration: exitDuration, ease },
             }}
+            transition={{ duration: enterDuration, ease }}
           >
             <h3 className="text-balance text-[clamp(1.75rem,2.4vw,2.375rem)] font-semibold leading-[1.15] tracking-[-0.03em] text-[var(--ss-fg)]">
               {item.title}
@@ -110,13 +111,13 @@ export function ServicePanel({
             <p className="max-w-[34ch] text-[1.0125rem] leading-[1.65] text-[var(--ss-fg-muted)]">
               {item.description}
             </p>
-            {item.cta ? (
-              <a
-                href={item.cta.href}
-                className="service-showcase__cta mt-1 inline-flex w-fit items-center gap-2 text-sm font-medium tracking-[-0.01em] text-[var(--ss-fg)] underline decoration-[var(--ss-border)] underline-offset-[0.35em] transition-[text-decoration-color] duration-200 hover:decoration-[var(--ss-fg)]"
-              >
-                {item.cta.label}
-              </a>
+            {item.contactIntent ? (
+              <div className="service-showcase__actions mt-1">
+                <ResponsiveContactLink
+                  intent={item.contactIntent}
+                  className="service-showcase__cta"
+                />
+              </div>
             ) : null}
           </motion.div>
         </AnimatePresence>

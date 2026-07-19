@@ -5,15 +5,21 @@ export interface SiteConfig {
   navigation: NavigationItem[]; sms: { general: string; removal: string; trailer: string };
   smsGeneralHref: string; smsRemovalHref: string; smsTrailerHref: string;
 }
-export interface ContactAction { label: string; mobileHref: string; desktopHref: string }
-export interface Service { title: string; description: string; cta: string; href: string }
+export type ContactIntent = "estimate" | "general" | "trailer";
+export interface ContactAction {
+  label: string;
+  phoneFallbackLabel: string;
+  mobileHref: string;
+  desktopHref: string;
+}
+export interface Service { title: string; description: string; contactIntent: ContactIntent }
 export interface FAQItem { question: string; answer: string }
 export interface WorkItem { title: string; description: string; image?: string; beforeImage?: string; afterImage?: string }
 
 const phoneDisplay = "319-461-6329";
 const phoneE164 = "+13194616329";
 const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL;
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://319junk.sites.openai.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://319-junk-web.vercel.app";
 const sms = {
   general: "Hi 319Junk, I have a question about your services. My location is ____ and I need help with ____.",
   removal: "Hi 319Junk, I’d like to request a junk-removal estimate. My location is ____ and I need removed ____.",
@@ -32,14 +38,31 @@ export const siteConfig: SiteConfig = {
   sms, smsGeneralHref: smsHref(sms.general), smsRemovalHref: smsHref(sms.removal), smsTrailerHref: smsHref(sms.trailer),
 };
 
-export const contactActions: ContactAction[] = [
-  { label: "Get a free estimate", mobileHref: siteConfig.smsRemovalHref, desktopHref: mailHref("Junk-removal estimate request", sms.removal) },
-  { label: "Rent a trailer", mobileHref: siteConfig.smsTrailerHref, desktopHref: mailHref("Trailer-rental inquiry", sms.trailer) },
-];
+export const contactIntentActions: Record<ContactIntent, ContactAction> = {
+  estimate: {
+    label: "Get a free estimate",
+    phoneFallbackLabel: "Call for a free estimate",
+    mobileHref: siteConfig.smsRemovalHref,
+    desktopHref: mailHref("Junk-removal estimate request", sms.removal),
+  },
+  general: {
+    label: "Ask about a job",
+    phoneFallbackLabel: "Call about a job",
+    mobileHref: siteConfig.smsGeneralHref,
+    desktopHref: mailHref("319Junk service inquiry", sms.general),
+  },
+  trailer: {
+    label: "Rent a trailer",
+    phoneFallbackLabel: "Call about trailer rentals",
+    mobileHref: siteConfig.smsTrailerHref,
+    desktopHref: mailHref("Trailer-rental inquiry", sms.trailer),
+  },
+};
+export const primaryContactIntents: ContactIntent[] = ["estimate", "trailer"];
 export const services: Service[] = [
-  { title: "Residential junk removal", description: "Clear unwanted items, clutter, and project debris without doing the heavy lifting yourself.", cta: "Get a free estimate", href: siteConfig.smsRemovalHref },
-  { title: "Commercial & industrial", description: "Practical removal support for businesses, facilities, job sites, and larger cleanup needs.", cta: "Call about a job", href: siteConfig.smsGeneralHref },
-  { title: "Trailer rentals", description: "Ask about a trailer for a cleanup or project on your schedule. Availability and details are confirmed directly.", cta: "Rent a trailer", href: siteConfig.smsTrailerHref },
+  { title: "Residential junk removal", description: "Clear unwanted items, clutter, and project debris without doing the heavy lifting yourself.", contactIntent: "estimate" },
+  { title: "Commercial & industrial", description: "Practical removal support for businesses, facilities, job sites, and larger cleanup needs.", contactIntent: "general" },
+  { title: "Trailer rentals", description: "Ask about a trailer for a cleanup or project on your schedule. Availability and details are confirmed directly.", contactIntent: "trailer" },
 ];
 export const faqItems: FAQItem[] = [
   { question: "What is the minimum junk-removal charge?", answer: "Junk-removal jobs have a $140 minimum. Final pricing depends on the details of the job. Contact 319Junk for a free estimate." },

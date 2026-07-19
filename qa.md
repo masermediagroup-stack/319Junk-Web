@@ -1,82 +1,124 @@
 # Quality assurance
 
+Validated July 19, 2026.
+
 ## Automated checks
 
-Validated July 13, 2026.
+- [x] `npm install`
+- [x] `npm run lint`
+- [x] `npm run build`
+- [x] `npm test`: 2 tests passed, 0 failed
+- [x] `git diff --check`
 
-- [x] ESLint — passed
-- [x] Production build — passed
-- [x] Rendered HTML tests — 2 passed, 0 failed
+The install removed 153 unused vinext, Vite, Cloudflare, Wrangler, and Drizzle packages and synchronized the lockfile. `npm audit --omit=dev` reports two moderate advisories in PostCSS nested under Next.js. The automated fix proposes an incompatible Next.js downgrade, so no forced fix was applied.
 
-## Functional and responsive
+## Vercel deployment remediation
 
-- [x] Header anchors and skip link
-- [x] Mobile menu open, close, focus, and navigation
-- [x] Call links and prefilled SMS links inspected without sending
-- [x] Desktop phone fallback shown when email is absent
-- [x] FAQ pointer and native-button keyboard behavior
-- [x] 320, 375, 390, 430, 768, 1024, 1280, and 1440px layouts
-- [x] No horizontal overflow or clipped primary content at tested widths
-- [x] Mobile Call/Text controls appear only inside the open menu
-- [x] No missing images, local 404s, or site console errors
+- The failed production deployment `dpl_6t1c6E2oo8g8AYmZK38kBZywuM6z` built vinext successfully but failed because Vercel's Next.js preset could not find the required `.next` output directory.
+- Runtime scripts now use native `next dev`, `next build`, and `next start`.
+- OpenAI Sites metadata, Sign in with ChatGPT helpers, Cloudflare worker/build integration, unused D1 examples, and generic starter assets were removed.
+- The project remains a single native Next.js App Router application; Vercel Services configuration is neither present nor required.
+- The native production build now prerenders `/`, `/_not-found`, `/robots.txt`, and `/sitemap.xml` successfully.
+- The public production alias is `https://319-junk-web.vercel.app`; it returns HTTP 200 and is the fallback canonical origin when `NEXT_PUBLIC_SITE_URL` is absent.
+- Production deployment `dpl_dVcWEnATNuEFAQBXS2epHenXRXnS` completed with Vercel state `READY`. A post-deploy fetch returned HTTP 200, the expected landing-page title, and canonical URL `https://319-junk-web.vercel.app`.
+- Local `vercel build --prod` completed the application build but Windows blocked Vercel's final local symlink packaging with `EPERM`; the authoritative remote Linux build completed successfully.
 
-## Accessibility, SEO, and performance
+## Responsive visual baseline
 
-- [x] Logical headings and landmarks inspected in the accessibility tree
-- [x] Keyboard navigation and visible focus styles
-- [x] Minimum 44px touch targets
-- [x] High-contrast monochrome palette
-- [x] Reduced-motion CSS and GSAP media-query handling
-- [x] Useful image alt text and decorative-image handling
-- [x] Metadata, canonical URL, Open Graph, robots, sitemap, and conservative JSON-LD
-- [x] Responsive image dimensions and lazy loading below the fold
+Before-edit and after-edit screenshots were captured from localhost at 1440x900, 1024x768, 390x844, and 320x568. The after-edit document reported no page-level horizontal overflow at all four widths.
 
-## Audit notes
+- Desktop confirms the final Hero, Services, About, FAQ, and Contact order and distinct section compositions.
+- The 390px and 320px heroes keep both conversion actions inside the first usable viewport beneath the sticky header.
+- Loaded images completed with nonzero natural dimensions.
+- The final phone number remains readable and visually connected to the conversion actions.
+- Focus visibility, contrast, sticky-header offsets, and section anchors were inspected in-browser.
 
-The July 13 Service Showcase port copied the nine requested portable files from `masermediagroup-stack/maser-lab` at source revision `b2182cf5671ea26dba90324904a129957f1a5f0d`; `service-showcase-demo.tsx` was not copied. The component was adapted to Geist Sans, the `#FEFEFE` paper token, square geometry, and the existing no-arrow rule. `framer-motion` now powers the scoped tab and panel transitions, and a local `cn()` utility supports the portable class composition.
+The desktop hero spacing follow-up moved the Iowa mark into the same content grid as the copy instead of positioning it against the viewport. At 1440px the measured copy-to-logo grid gap is 87px; at 1024px it is 56px. The headline-to-deck and deck-to-action gaps are both 28px, document overflow remains zero, and the 390px mobile hero remains unchanged with both CTAs visible.
 
-The three visible panels use verified 319Junk service copy from `lib/site-config.ts` and owner-supplied photography. Residential and Commercial activate the comparison control with matched project pairs; Trailer Rentals uses a branded trailer image. Showcase CTAs lead to the responsive contact section so the existing mobile SMS and desktop phone fallback behavior remains authoritative.
+## Interaction checks
 
-Browser checks confirmed pointer selection and Arrow-key navigation across the service tabs, the correct active tab/panel relationship, zero console errors, and no page-level horizontal overflow at 320, 375, 390, 430, 768, 1024, 1280, and 1440px. On narrow screens the tab list scrolls inside its own container. The final validation passed ESLint, the vinext production build, and both rendered-HTML tests.
+### Mobile navigation
 
-The combined desktop/mobile design pass found strong hierarchy, clear above-the-fold service context, obvious conversion actions, and consistent monochrome branding. The mobile menu keeps calls/texts discoverable without adding a persistent overlay to the landing page.
+- The mounted menu reverses cleanly during a rapid open and close. Browser sampling observed opacity at 0.93 while opening and 0 after the immediate reversal completed.
+- Opening moves focus to Services and locks body scrolling.
+- Shift+Tab from Services wraps to Text; Tab from Text wraps to Services.
+- Escape closes the menu and restores focus to the menu trigger.
+- Navigation links close the menu.
+- The CSS hamburger transform remained interruptible during rapid toggling.
 
-The July 13 pass applied the installed `web-design-guidelines` and `compact-landing` skills across the production interface. It tightened the section rhythm while preserving the established editorial-utility direction; moved hover-only treatments behind fine-pointer media queries; added balanced headings, pretty body wrapping, tabular numerals, touch-action defaults, active feedback, menu overscroll containment, and larger inline-link targets; and added a browser theme color. The GSAP hero mark reveal now uses transform and opacity only. The comparison component has a visible focus-within state and touch-safe drag behavior.
+### Service Showcase
 
-The updated layout was rechecked at 320, 375, 390, 430, 768, 1024, 1280, and 1440px. All tested widths reported a page scroll width equal to the viewport width. Navigation switched at the intended breakpoint, FAQ disclosure state changed correctly, the menu locked body scrolling while open, lazy images loaded when brought into view, and the browser console reported no warnings or errors.
+- Pointer selection and Arrow, Home, and End navigation update the selected tab, focus, and associated panel.
+- Keyboard panel content settles with opacity 1 and no transform, so keyboard changes do not receive panel choreography.
+- The browser session exercised the reduced-motion branch, which reported zero-duration service motion.
+- Narrow-screen tab scrolling stays inside the component rather than moving the page.
+- Service CTAs act directly and no longer introduce an extra scroll-to-contact step.
 
-The latest mobile-contact pass removed the standalone sticky Call/Text navigation and verified that the same controls exist only within the opened mobile menu. The service-highlight strip now uses a continuous CSS marquee with no internal borders, no wrapped labels, no page-level overflow at 455px, and a static overflow fallback under `prefers-reduced-motion`.
+### Comparison slider
 
-The FAQ alignment pass verified a centered, single-line desktop heading above a centered 1050px question column at 1066px. At 390px the heading wraps normally, the FAQ list remains within its 350px content area, and page width stays equal to the viewport. Selected service-tab text resolves to `#FEFEFE`; inactive tabs remain black on transparent and underline on hover-capable pointers.
+- The handle measures 44px by 44px.
+- Arrow Right changed 50 to 52.
+- Shift+Arrow Right changed 52 to 62.
+- Home changed the value to 0; End changed it to 100.
+- A pointer press on the handle updated the ARIA value, clipped image, divider, and handle transform.
+- Source inspection confirms pointer movement writes directly to refs and DOM styles at most once per animation frame rather than setting React state on every event.
 
-The FAQ motion pass replaced instant `hidden` toggling with an accessible grid-height, translate, and opacity transition. Browser inspection confirmed the panel exposes 420ms/240ms transition durations and passes through an intermediate height and opacity before settling. Reduced-motion CSS continues to reduce all transition durations to near-zero.
+### FAQ
 
-The service-tab contrast fix replaced the animated pill's escaping negative layer with an isolated stacking context: the ink background now paints at layer 0 and the label at layer 10. After switching to Commercial, browser inspection confirmed the visible label is opaque `#FEFEFE` above the pill background.
+- `aria-expanded` and `aria-hidden` remain synchronized on open and close.
+- Computed timing is 260ms for grid height, 180ms for opacity, and 220ms for the vertical transform.
+- FAQ content remains immediately available and does not use a page-entrance reveal.
 
-The marquee-spacing pass replaced compounded label and group padding with one shared gap token. Browser measurements reported eleven consecutive 84px gaps at desktop and eleven consecutive 44px gaps at 390px, including the repeated-sequence seam; mobile document width remained equal to its viewport width.
+### Contact intents
 
-The Residential and Commercial tabs now render the comparison control with owner-supplied, matched before/after project photos. The redundant Cleanouts tab was removed, and Trailer Rentals now uses the supplied 319Junk trailer image. Local browser QA previously confirmed correct Before/After labeling and keyboard adjustment from 50% to 52% with Arrow Right; the updated local assets retain the same interaction component.
+- With `NEXT_PUBLIC_CONTACT_EMAIL` unset, visible desktop actions use explicit telephone labels such as "Call for a free estimate" and "Call about trailer rentals."
+- With it set to a test address, every desktop intent uses a prefilled `mailto:` URL.
+- In both configurations, every mobile intent remains a prefilled SMS URL.
+- Contact behavior is centralized in `lib/site-config.ts` through the estimate, general, and trailer intents.
 
-The comparison divider now mounts directly at its 50% value. The former intersection intro that temporarily moved it to 42% was removed, so switching between Residential and Commercial no longer makes the handle travel into the center; pointer dragging and keyboard adjustment remain unchanged.
+## Production Lighthouse
 
-The initial-scroll fix removed `scrollIntoView()` from the service-tab hydration effect because it could move the entire document to the Services section. The replacement adjusts only the tab scroller's horizontal `scrollLeft` when an active tab is clipped. A fresh load of `http://localhost:3000/` remained at `scrollY: 0` immediately and after one second, with an empty hash, the hero at the top beneath the 72px header, tab scroll-left at 0, and no console errors.
+The production bundle was previously served through its generated Wrangler worker with `NEXT_PUBLIC_SITE_URL=http://localhost:3000` for this Lighthouse snapshot. The current deployment target is native Next.js on Vercel; rerun Lighthouse against the Vercel production URL after deployment.
 
-The Services introduction now centers its heading and supporting copy at the 700px mobile breakpoint while retaining the existing desktop alignment. The responsive rule also centers the copy block itself with auto inline margins.
+- Performance: 95
+- Accessibility: 100
+- Best Practices: 100
+- SEO: 100
+- Largest Contentful Paint: 1540ms
+- Cumulative Layout Shift: 0
+- Total Blocking Time: 0ms
+- First Contentful Paint: 300ms
+- Console errors: 0
 
-The July 13 typography pass applied the installed `better-typography` skill. It removed all eyebrow labels, section and service indices, hero micro-copy, mobile-navigation indices, field-note captions, and the small uppercase photo disclaimer. Geist Sans is now the sole interface typeface. The rendered system uses three weights (400, 600, and 800), consistent semantic size tokens, 16px body copy, 14px UI copy, controlled 60–65 character measures, font smoothing, disabled synthetic weights, and normalized wrapping, tracking, and line heights. Desktop and 390px mobile checks confirmed descending heading sizes, no remaining micro-label elements, and no horizontal overflow.
+The LCP and CLS targets passed. Lighthouse does not produce a field INP value, so the requested INP-under-200ms target cannot be claimed from this lab run; zero TBT and the direct interaction checks are supporting evidence only. Lighthouse produced a complete valid report, then Chrome Launcher logged a Windows `EPERM` warning while removing its temporary profile.
 
-Outlined text was removed from the hero and prohibited in the design system. A source scan confirmed there are no remaining text-stroke or text-clipped display treatments.
+The earlier vinext preview limitation is no longer applicable because the Sites/vinext runtime has been removed. Native `next build` now completes successfully and the rendered-HTML tests read the prerendered Next.js page output.
 
-The final CTA phone number was moved directly beneath the action buttons. Its decorative top rule and extra top padding were removed to tighten the conversion group.
+## Reduced motion and pointer rules
 
-The July 13 anti-slop pass applied the installed `design-taste-frontend` skill with design variance 6, motion intensity 4, and visual density 3. It replaced the mobile navigation word and decorative dot with a two-line hamburger that transitions to an X, centered the complete mobile hero conversion block, shortened the hero supporting copy, unified desktop and mobile CTA labels, tightened the sticky header, stacked section introductions, and prohibited recurring AI-template decoration. The Service Showcase now uses owner-supplied 319Junk project photography.
+- Marketing entrances exit early when `prefers-reduced-motion: reduce` matches.
+- Service tab, panel, comparison, FAQ, control, and menu transitions reduce to effectively zero duration.
+- The service marquee becomes a static horizontal list.
+- Hover-only treatments are scoped to fine pointers.
+- The marquee remains the page's only perpetual animation.
 
-Screenshot review cannot establish complete WCAG 2.2 AA compliance. Automated accessibility tooling and assistive-technology testing remain useful before a custom-domain launch.
+The infinite-marquee follow-up corrected a loop segment that was shorter than the desktop viewport. Each segment now contains two service-highlight sequences, has a minimum width of one viewport, and is paired with an identical segment for the 50 percent translation seam. Browser measurements reported equal 1988px segments inside the 1425px desktop viewport, equal 2560px segments at the ultrawide check, equal 1508px segments inside the 375px mobile layout, and zero page overflow at every checked width.
 
-`npm audit --omit=dev` reports two moderate PostCSS advisories nested under the current Next.js dependency. The suggested automated fix would downgrade Next.js to an incompatible major version, so no forced mutation was applied. Recheck when the framework publishes a compatible patched dependency.
+The FAQ motion regression follow-up restored the original 420ms accordion easing and 240ms opacity fade. FAQ buttons were removed from the global press-scale selector so question titles remain stationary during pointer activation. A localhost interaction check confirmed that all seven question buttons retained `transform: none`, only the selected disclosure reported `aria-expanded="true"`, the opening and closing panels animated concurrently, and page overflow remained zero.
+
+The About Facebook-link follow-up removed the persistent border and scoped a 240ms left-to-right underline reveal to the word “Facebook.” The same reveal is available through `:focus-visible`. Localhost computed-style checks confirmed a zero-width resting transform, no link border, the expected transition duration, stable text dimensions, and zero page overflow.
+
+The hero typography follow-up changed the display line-height ratio from `.88` to `.93`, replaced the mobile deck’s incidental wrapping with four controlled text segments, and increased the entrance cadence from 60ms to 160ms. The stagger now runs heading, deck, primary CTA, and secondary CTA from top to bottom; the decorative landscape and desktop logo retain their own fades. At 390×844 and 320×568, all four deck segments measured as single lines. At 320px the CTA group ended 71px above the hero bottom. The 1440×900 check retained a two-line desktop deck, and all three checks reported zero page overflow.
+
+The icon-system follow-up used ChatGPT built-in Imagegen to establish eight monochrome pictograms, then translated the selected silhouettes into accessible inline SVGs. At the 319px mobile preview, all four navigation links contained one icon and measured 69.6px tall; Call and Text each contained one icon and measured 56px tall; initial menu focus still landed on Services. At 1440×900, all three service tabs contained one icon and measured 50.2px tall, both visible hero CTAs contained one icon and measured 56px tall, the Facebook action contained its external arrow, page overflow was zero, and the console reported no errors.
+
+The mobile quick-action follow-up gives Call and Text identical paper-and-ink styling, equal widths, matching icons, and the same hover inversion. A two-pixel ink divider preserves separation without creating a primary and secondary hierarchy.
+
+The mobile-menu simplification removes the redundant Contact navigation row because Call and Text remain directly available beneath the three section links. A focused online reference scan found hauling trucks, cargo boxes, and waste pickup as the most common service pictograms; ChatGPT built-in Imagegen then produced an original dolly-and-box concept, which was translated into a new 24px `services` SVG rather than copying a marketplace asset. At 390×844, the menu exposed exactly Services, About, and FAQ at 69.6px tall, followed by Call and Text; the Services SVG measured 24px, initial focus landed on Services, Contact was absent, overflow was zero, and the console reported no errors.
 
 ## Launch blockers and limitations
 
-- Add a verified owner email to `NEXT_PUBLIC_CONTACT_EMAIL` for desktop email CTAs.
-- Set `NEXT_PUBLIC_SITE_URL` when the final domain is known.
-- Continue adding owner-approved 319Junk photography as new projects are documented; no unverified Facebook images are used.
+- Add the verified owner email to `NEXT_PUBLIC_CONTACT_EMAIL` if desktop email actions are desired.
+- Set `NEXT_PUBLIC_SITE_URL` when the final domain is known. The current configured production placeholder does not resolve.
+- Lighthouse is a lab audit and does not replace field Core Web Vitals, assistive-technology testing, or a complete WCAG 2.2 AA audit.
+- Continue using only owner-approved photography and matched same-project before-and-after pairs.

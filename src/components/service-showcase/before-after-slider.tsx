@@ -1,12 +1,12 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import {
   useCallback,
   useId,
+  useLayoutEffect,
   useRef,
-  useState,
   type KeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
@@ -34,35 +34,83 @@ export function BeforeAfterSlider({
   const reduce = reducedMotion || !!prefersReduced;
   const labelId = useId();
   const trackRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const dividerRef = useRef<HTMLDivElement>(null);
+  const handleRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
-  const [dragging, setDragging] = useState(false);
-  const [position, setPosition] = useState(50);
+  const positionRef = useRef(50);
+  const frameRef = useRef<number | null>(null);
+  const pendingClientXRef = useRef<number | null>(null);
+
+  const renderPosition = useCallback((value: number) => {
+    const next = Math.min(100, Math.max(0, value));
+    const track = trackRef.current;
+    const overlay = overlayRef.current;
+    const divider = dividerRef.current;
+    const handle = handleRef.current;
+    if (!track || !overlay || !divider || !handle) return;
+
+    positionRef.current = next;
+    const x = track.getBoundingClientRect().width * (next / 100);
+    overlay.style.clipPath = `inset(0 ${100 - next}% 0 0)`;
+    divider.style.left = "0px";
+    divider.style.transform = `translate3d(${x}px, 0, 0)`;
+    handle.style.left = "0px";
+    handle.style.transform = `translate3d(calc(${x}px - 50%), -50%, 0)`;
+    handle.setAttribute("aria-valuenow", String(Math.round(next)));
+    handle.setAttribute("aria-valuetext", `${Math.round(next)}% before visible`);
+  }, []);
 
   const updateFromClientX = useCallback((clientX: number) => {
-    const node = trackRef.current;
-    if (!node) return;
-    const rect = node.getBoundingClientRect();
+    const track = trackRef.current;
+    if (!track) return;
+    const rect = track.getBoundingClientRect();
     if (rect.width <= 0) return;
-    const next = ((clientX - rect.left) / rect.width) * 100;
-    setPosition(Math.min(100, Math.max(0, next)));
-  }, []);
+    renderPosition(((clientX - rect.left) / rect.width) * 100);
+  }, [renderPosition]);
+
+  useLayoutEffect(() => {
+    renderPosition(positionRef.current);
+    const observer = new ResizeObserver(() => renderPosition(positionRef.current));
+    if (trackRef.current) observer.observe(trackRef.current);
+    return () => {
+      observer.disconnect();
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+    };
+  }, [renderPosition]);
 
   const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     event.preventDefault();
     draggingRef.current = true;
-    setDragging(true);
+    if (trackRef.current) trackRef.current.dataset.dragging = "true";
     event.currentTarget.setPointerCapture(event.pointerId);
     updateFromClientX(event.clientX);
   };
 
   const onPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (!draggingRef.current) return;
-    updateFromClientX(event.clientX);
+    pendingClientXRef.current = event.clientX;
+    if (frameRef.current !== null) return;
+    frameRef.current = requestAnimationFrame(() => {
+      frameRef.current = null;
+      if (pendingClientXRef.current !== null) {
+        updateFromClientX(pendingClientXRef.current);
+        pendingClientXRef.current = null;
+      }
+    });
   };
 
   const onPointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (pendingClientXRef.current !== null) {
+      updateFromClientX(pendingClientXRef.current);
+      pendingClientXRef.current = null;
+    }
+    if (frameRef.current !== null) {
+      cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+    }
     draggingRef.current = false;
-    setDragging(false);
+    if (trackRef.current) trackRef.current.dataset.dragging = "false";
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
@@ -72,37 +120,34 @@ export function BeforeAfterSlider({
     const step = event.shiftKey ? 10 : 2;
     if (event.key === "ArrowLeft") {
       event.preventDefault();
-      setPosition((p) => Math.max(0, p - step));
+      renderPosition(positionRef.current - step);
     } else if (event.key === "ArrowRight") {
       event.preventDefault();
-      setPosition((p) => Math.min(100, p + step));
+      renderPosition(positionRef.current + step);
     } else if (event.key === "Home") {
       event.preventDefault();
-      setPosition(0);
+      renderPosition(0);
     } else if (event.key === "End") {
       event.preventDefault();
-      setPosition(100);
+      renderPosition(100);
     }
   };
 
   return (
-    <motion.div
+    <div
       ref={trackRef}
       className={cn(
-        "relative aspect-[4/3] w-full overflow-hidden border border-[var(--ss-border)] bg-[var(--ss-hover)]",
+        "service-showcase__comparison relative aspect-[4/3] w-full overflow-hidden border border-[var(--ss-border)] bg-[var(--ss-hover)]",
         "touch-none select-none",
         className,
       )}
       style={{ borderRadius: borderRadiusPx }}
-      initial={reduce ? false : { opacity: 0.92, scale: 0.985 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: reduce ? 0 : 0.45, ease: [0.22, 1, 0.36, 1] }}
+      data-dragging="false"
+      data-reduced-motion={reduce ? "true" : undefined}
       role="group"
       aria-labelledby={labelId}
     >
-      <span id={labelId} className="sr-only">
-        Before and after image comparison
-      </span>
+      <span id={labelId} className="sr-only">Before and after image comparison</span>
 
       <div className="absolute inset-0">
         <Image
@@ -114,20 +159,13 @@ export function BeforeAfterSlider({
           unoptimized
           className="object-cover"
         />
-        <span className="pointer-events-none absolute right-3 top-3 rounded-none bg-black/55 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--ss-bg)]">
-          After
-        </span>
+        <span className="pointer-events-none absolute right-3 top-3 rounded-none bg-[#090909]/70 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--ss-bg)]">After</span>
       </div>
 
       <div
-        className="absolute inset-0 overflow-hidden will-change-[clip-path]"
-        style={{
-          clipPath: `inset(0 ${100 - position}% 0 0)`,
-          transition:
-            reduce || dragging
-              ? undefined
-              : "clip-path 180ms cubic-bezier(0.22, 1, 0.36, 1)",
-        }}
+        ref={overlayRef}
+        className="service-showcase__ba-overlay absolute inset-0 overflow-hidden will-change-[clip-path]"
+        style={{ clipPath: "inset(0 50% 0 0)" }}
       >
         <Image
           src={before.src}
@@ -138,9 +176,7 @@ export function BeforeAfterSlider({
           unoptimized
           className="object-cover"
         />
-        <span className="pointer-events-none absolute left-3 top-3 rounded-none bg-black/55 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--ss-bg)]">
-          Before
-        </span>
+        <span className="pointer-events-none absolute left-3 top-3 rounded-none bg-[#090909]/70 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--ss-bg)]">Before</span>
       </div>
 
       <div
@@ -153,74 +189,53 @@ export function BeforeAfterSlider({
       />
 
       <div
-        className="pointer-events-none absolute inset-y-0 z-10 w-px bg-[var(--ss-bg)]"
-        style={{
-          left: `${position}%`,
-          transform: "translateX(-50%)",
-          boxShadow: "0 0 0 1px rgba(0,0,0,0.08)",
-          transition:
-            reduce || dragging
-              ? undefined
-              : "left 180ms cubic-bezier(0.22, 1, 0.36, 1)",
-        }}
+        ref={dividerRef}
+        className="service-showcase__ba-divider pointer-events-none absolute inset-y-0 z-10 w-px bg-[var(--ss-bg)]"
+        style={{ left: "50%", transform: "translateX(-50%)", boxShadow: "0 0 0 1px rgba(0,0,0,0.08)" }}
         aria-hidden
       />
 
       <div
+        ref={handleRef}
         role="slider"
         tabIndex={0}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-valuenow={Math.round(position)}
-        aria-valuetext={`${Math.round(position)}% before visible`}
+        aria-valuenow={50}
+        aria-valuetext="50% before visible"
         aria-label="Comparison position"
         className={cn(
-          "service-showcase__ba-handle absolute top-1/2 z-20",
-          "flex size-11 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize items-center justify-center",
-          "rounded-none border border-[var(--ss-bg)] bg-[var(--ss-bg)]",
-          "shadow-[0_4px_18px_rgba(0,0,0,0.18)]",
+          "service-showcase__ba-handle absolute top-[70%] z-20 md:top-1/2",
+          "flex size-12 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize items-center justify-center md:size-11",
           "touch-none",
         )}
-        style={{ left: `${position}%` }}
+        style={{ left: "50%" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
         onKeyDown={onKeyDown}
       >
-        <span className="flex items-center gap-0.5 text-[var(--ss-fg)]" aria-hidden>
+        <span
+          className={cn(
+            "service-showcase__ba-handle-visual flex size-8 items-center justify-center gap-0.5",
+            "rounded-none border border-[var(--ss-bg)] bg-[var(--ss-bg)] text-[var(--ss-fg)]",
+            "shadow-[0_4px_18px_rgba(0,0,0,0.18)] md:size-11",
+          )}
+          aria-hidden
+        >
           <ChevronLeftIcon />
           <ChevronRightIcon />
         </span>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 function ChevronLeftIcon() {
-  return (
-    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden>
-      <path
-        d="M6.25 2.25 3.5 5l2.75 2.75"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden><path d="M6.25 2.25 3.5 5l2.75 2.75" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 }
 
 function ChevronRightIcon() {
-  return (
-    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden>
-      <path
-        d="M3.75 2.25 6.5 5 3.75 7.75"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden><path d="M3.75 2.25 6.5 5 3.75 7.75" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 }

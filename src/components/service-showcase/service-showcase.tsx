@@ -7,7 +7,7 @@ import { SS_DEFAULTS } from "./constants";
 import { SERVICE_ITEMS } from "./data";
 import { ServicePanel } from "./service-panel";
 import { ServiceTabs } from "./service-tabs";
-import type { ServiceShowcaseProps } from "./types";
+import type { ServiceChangeSource, ServiceShowcaseProps } from "./types";
 import "./tokens.css";
 
 export function ServiceShowcase({
@@ -26,6 +26,7 @@ export function ServiceShowcase({
 }: ServiceShowcaseProps) {
   const panelIdPrefix = useId().replace(/:/g, "");
   const prefersReduced = useReducedMotion();
+  const [changeSource, setChangeSource] = useState<ServiceChangeSource>("programmatic");
   const [uncontrolledId, setUncontrolledId] = useState(() => {
     if (items.some((item) => item.id === defaultActiveId)) return defaultActiveId;
     return items[0]?.id ?? SS_DEFAULTS.activeId;
@@ -38,7 +39,8 @@ export function ServiceShowcase({
   const reducedMotion =
     forceReducedMotion || !animationEnabled || !!prefersReduced;
 
-  const onChange = (id: string) => {
+  const onChange = (id: string, source: ServiceChangeSource) => {
+    setChangeSource(source);
     if (controlledActiveId === undefined) {
       setUncontrolledId(id);
     }
@@ -72,6 +74,7 @@ export function ServiceShowcase({
             tabDurationMs={tabDurationMs}
             reducedMotion={reducedMotion}
             panelIdPrefix={panelIdPrefix}
+            instant={changeSource !== "pointer"}
           />
         </LayoutGroup>
         <ServicePanel
@@ -82,6 +85,7 @@ export function ServiceShowcase({
           reducedMotion={reducedMotion}
           imageMode={imageMode}
           isFirstPaint={activeItem.id === (items[0]?.id ?? "")}
+          instant={changeSource !== "pointer"}
         />
       </div>
     </div>

@@ -2,17 +2,25 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useId, useRef, type KeyboardEvent } from "react";
+import { SiteIcon, type SiteIconName } from "@/components/site-icon";
 import { cn } from "@/lib/utils";
 import { SS_PILL_LAYOUT_ID } from "./constants";
-import type { ServiceItem } from "./types";
+import type { ServiceChangeSource, ServiceItem } from "./types";
 
 type ServiceTabsProps = {
   items: ServiceItem[];
   activeId: string;
-  onChange: (id: string) => void;
+  onChange: (id: string, source: ServiceChangeSource) => void;
   tabDurationMs: number;
   reducedMotion: boolean;
   panelIdPrefix: string;
+  instant: boolean;
+};
+
+const tabIcons: Record<string, SiteIconName> = {
+  residential: "residential",
+  commercial: "commercial",
+  "trailer-rentals": "trailer",
 };
 
 export function ServiceTabs({
@@ -22,6 +30,7 @@ export function ServiceTabs({
   tabDurationMs,
   reducedMotion,
   panelIdPrefix,
+  instant,
 }: ServiceTabsProps) {
   const listId = useId();
   const prefersReduced = useReducedMotion();
@@ -48,16 +57,16 @@ export function ServiceTabs({
 
     scroller.scrollTo({
       left: nextLeft,
-      behavior: reduce ? "auto" : "smooth",
+      behavior: reduce || instant ? "auto" : "smooth",
     });
-  }, [activeId, reduce]);
+  }, [activeId, instant, reduce]);
 
   const activeIndex = items.findIndex((item) => item.id === activeId);
 
   const focusTab = (index: number) => {
     const next = items[index];
     if (!next) return;
-    onChange(next.id);
+    onChange(next.id, "keyboard");
     requestAnimationFrame(() => {
       tabRefs.current.get(next.id)?.focus();
     });
@@ -127,27 +136,28 @@ export function ServiceTabs({
                 "duration-[var(--ss-tab-duration)]",
                 selected ? "text-[var(--ss-bg)]" : "text-[var(--ss-fg)]",
               )}
-              onClick={() => onChange(item.id)}
+              onClick={(event) => onChange(item.id, event.detail === 0 ? "keyboard" : "pointer")}
             >
               {selected ? (
                 <motion.span
                   layoutId={SS_PILL_LAYOUT_ID}
                   className="absolute inset-0 z-0 rounded-none bg-[var(--ss-fg)]"
                   transition={
-                    reduce
+                    reduce || instant
                       ? { duration: 0 }
                       : {
                           type: "spring",
-                          stiffness: 420,
-                          damping: 34,
-                          mass: 0.7,
-                          duration: tabDurationMs / 1000,
+                          duration: Math.min(tabDurationMs, 280) / 1000,
+                          bounce: 0,
                         }
                   }
                   aria-hidden
                 />
               ) : null}
-              <span className="service-showcase__tab-label relative z-10 whitespace-nowrap">{item.label}</span>
+              <span className="service-showcase__tab-label relative z-10 inline-flex items-center gap-2 whitespace-nowrap">
+                <SiteIcon className="service-showcase__tab-icon" name={tabIcons[item.id] ?? "boxes"} />
+                <span>{item.label}</span>
+              </span>
             </button>
           );
         })}
