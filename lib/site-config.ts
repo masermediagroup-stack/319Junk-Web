@@ -61,7 +61,7 @@ export const contactIntentActions: Record<ContactIntent, ContactAction> = {
 export const primaryContactIntents: ContactIntent[] = ["estimate", "trailer"];
 export const services: Service[] = [
   { title: "Residential Junk Removal", description: "Clear unwanted items, clutter, and project debris without doing the heavy lifting yourself.", contactIntent: "estimate" },
-  { title: "Commercial & Industrial", description: "Practical removal support for businesses, facilities, job sites, and larger cleanup needs.", contactIntent: "general" },
+  { title: "Commercial & Industrial", description: "Practical removal support for businesses, facilities, job sites, and larger cleanup needs.", contactIntent: "estimate" },
   { title: "Trailer Rentals", description: "Ask about a trailer for a cleanup or project on your schedule. Availability and details are confirmed directly.", contactIntent: "trailer" },
 ];
 export const faqItems: FAQItem[] = [

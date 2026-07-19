@@ -116,6 +116,44 @@ The mobile quick-action follow-up gives Call and Text identical paper-and-ink st
 
 The mobile-menu simplification removes the redundant Contact navigation row because Call and Text remain directly available beneath the three section links. A focused online reference scan found hauling trucks, cargo boxes, and waste pickup as the most common service pictograms; ChatGPT built-in Imagegen then produced an original dolly-and-box concept, which was translated into a new 24px `services` SVG rather than copying a marketplace asset. At 390×844, the menu exposed exactly Services, About, and FAQ at 69.6px tall, followed by Call and Text; the Services SVG measured 24px, initial focus landed on Services, Contact was absent, overflow was zero, and the console reported no errors.
 
+The mobile-hero height follow-up changes the hero minimum to `max(370px, calc(100dvh - 270px))` and adds a compact-height fallback below 650px. At 390x844, the hero measured 574px tall, both CTAs retained 96px of bottom clearance, 70px of the "One call. More space." heading was visible in the initial viewport, and horizontal overflow was zero. At 319x562, the content-driven hero measured 379.6px tall, both CTAs retained 12px of bottom clearance, 54.4px of the next heading was visible, and horizontal overflow was zero. The temporary responsive viewport override was reset after verification.
+
+The post-change repository gates passed: `npm run lint`, `npm run build`, and `npm test`. The test command completed a second production build and both rendered-HTML tests passed.
+
+The comparison-handle alignment follow-up removed a duplicate Tailwind translate from the transform-driven slider handle. At 390x844, the divider and visible arrow box both centered at 187.5px with a zero-pixel delta. The mobile handle retained a 48px interaction target and 32px visible control, remained positioned at 70 percent of the image height, and produced no horizontal overflow. The live screenshot confirmed that the arrow box now intersects the divider rather than floating to its left.
+
+The post-change repository gates passed again: `npm run lint`, `npm run build`, and `npm test`. The test command completed a second production build and both rendered-HTML tests passed.
+
+The Commercial service CTA now uses the same centralized `estimate` contact intent as Residential. In the live mobile layout, both tabs rendered the same "Get a free estimate" label, estimate SMS URL, phone icon, CSS classes, 546.3px available width, and 58.8px height. With email unset, both desktop tabs derive the same explicit "Call for a free estimate" phone fallback. No business facts or contact destinations were duplicated outside `lib/site-config.ts`.
+
+The post-change repository gates passed again: `npm run lint`, `npm run build`, and `npm test`. The test command completed a second production build and both rendered-HTML tests passed.
+
+The hero-photo follow-up replaces the previous landscape with the owner-supplied 2160x1388 Iowa cornfield image at `public/images/iowa-cornfield-hero.jpg`. The hero now uses the responsive Next.js image pipeline while preserving the existing decorative alt treatment, priority loading, overlay, and viewport-specific crop. Localhost checks at 1440x900 and 390x844 confirmed that the image completed loading through `/_next/image`, the mobile crop retained its 58 percent horizontal focal point, and horizontal overflow remained zero.
+
+The post-change repository gates passed again: `npm run lint`, `npm run build`, and `npm test`. The test command completed a second production build and both rendered-HTML tests passed.
+
+The mobile hero-overlay follow-up reduces the paper wash at the top from 70 percent to 42 percent and at the midpoint from 82 percent to 70 percent, while retaining the full paper fade at the bottom for the section transition. The desktop overlay is unchanged. A live 390x844 computed-style check confirmed the updated gradient, successful hero-image loading, and zero horizontal overflow.
+
+The mobile FAQ-heading follow-up uses two intentional text rows and a narrower fluid display size below 700px, keeping “Straight answers,” and “honest work.” on separate lines rather than allowing a three-line wrap. The final phone number now reveals a two-pixel underline from left to right once 45 percent of the link enters the viewport; hover and keyboard focus expose the same underline, while reduced-motion users receive the completed underline immediately. The interaction uses a scoped `IntersectionObserver`, transforms only, and disconnects on teardown.
+
+The post-change repository gates passed: `npm run lint`, `npm run build`, and `npm test`. The test command completed a second production build and both rendered-HTML tests passed.
+
+The scroll-choreography follow-up applies Emil Kowalski’s frequency, purpose, speed, and function gate to the remaining marketing surface. It adds one-time transform-and-opacity entrances to the Services heading and showcase, About brand mark and process story, FAQ heading, final conversion group, and footer columns. Group entrances use a 55ms stagger; the Service Showcase settles without bounce; the About mark receives a directional entrance. Navigation, FAQ disclosures, the comparison slider, service tabs, and the marquee were deliberately excluded from new scroll animation because they are frequent, functional, information-dense, or already animated. Reduced-motion users bypass every new entrance.
+
+At 443x1272, a live Services check captured the heading and showcase mid-transition, then confirmed both settled at opacity 1 and `transform: none`; a separate About check captured the brand mark mid-entry and confirmed its final settled state. Both checks reported zero page-level horizontal overflow.
+
+The post-change repository gates passed: `npm run lint`, `npm run build`, and `npm test`. The test command completed a second production build and both rendered-HTML tests passed.
+
+The entrance-pacing follow-up addresses a visible flash caused by observer-driven keyframes being attached after the first paint. `MotionController` now prepares animation work in `useLayoutEffect`, and scroll observers use a positive 15 percent bottom root margin so entrances begin just before content reaches the viewport. Scroll motion starts at 8 percent opacity with reduced displacement, uses a more measured `cubic-bezier(.3,.35,.4,1)` curve, and runs for 800ms on grouped copy or 950ms on image/showcase holders. The stagger increased to 80ms. Hero sequencing, interaction feedback, FAQ disclosures, navigation, and reduced-motion behavior remain unchanged.
+
+A 443x1272 localhost timing check confirmed the Services heading and showcase were visibly progressing at the early and middle samples, then settled at opacity 1 and `transform: none`; horizontal overflow remained zero.
+
+The post-change repository gates passed: `npm run lint`, `npm run build`, and `npm test`. The test command completed a second production build and both rendered-HTML tests passed.
+
+Before publication, local `main` was fast-forwarded to merged PR #2 (`5002e99`). Its “Serving Eastern &amp; Southeast Iowa” hero line, title-cased service names, and unhyphenated minimum-charge FAQ wording were preserved. The only overlap resolved in favor of the local UX work was the Commercial service contact intent, which remains `estimate` so its CTA matches Residential as requested.
+
+After the PR #2 synchronization, `npm run lint`, `npm run build`, and `npm test` passed. The test command completed a second production build and both rendered-HTML tests passed.
+
 ## Launch blockers and limitations
 
 - Add the verified owner email to `NEXT_PUBLIC_CONTACT_EMAIL` if desktop email actions are desired.

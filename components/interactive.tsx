@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { FAQItem } from "@/lib/site-config";
 import { siteConfig } from "@/lib/site-config";
 import { SiteIcon, type SiteIconName } from "@/components/site-icon";
@@ -118,11 +118,12 @@ export function FAQList({ items }: { items: FAQItem[] }) {
 export function MotionController({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!root.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const animations: Animation[] = [];
     const ease = "cubic-bezier(.23,1,.32,1)";
+    const scrollEase = "cubic-bezier(.3,.35,.4,1)";
     const animate = (
       element: Element,
       keyframes: Keyframe[],
@@ -154,17 +155,59 @@ export function MotionController({ children }: { children: ReactNode }) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-        animate(entry.target, [
-          { opacity: 0, transform: "translateY(20px)" },
-          { opacity: 1, transform: "translateY(0)" },
-        ], { duration: 550, easing: ease });
+        const variant = entry.target.getAttribute("data-scroll-reveal");
+        const keyframes = variant === "mark"
+          ? [
+              { opacity: .08, transform: "translateX(-18px) scale(.985)" },
+              { opacity: 1, transform: "translateX(0) scale(1)" },
+            ]
+          : variant === "settle"
+            ? [
+                { opacity: .08, transform: "translateY(10px) scale(.985)" },
+                { opacity: 1, transform: "translateY(0) scale(1)" },
+              ]
+            : [
+                { opacity: .08, transform: "translateY(14px)" },
+                { opacity: 1, transform: "translateY(0)" },
+              ];
+        animate(entry.target, keyframes, {
+          duration: variant === "mark" ? 950 : variant === "settle" ? 950 : 800,
+          easing: scrollEase,
+        });
         observer.unobserve(entry.target);
       });
-    }, { threshold: .16 });
+    }, { threshold: .12, rootMargin: "0px 0px 15% 0px" });
 
-    root.current.querySelectorAll("[data-section-intro]").forEach((element) => observer.observe(element));
+    root.current.querySelectorAll("[data-section-intro], [data-scroll-reveal]").forEach((element) => observer.observe(element));
+
+    const groupObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.querySelectorAll("[data-reveal-item]").forEach((element, index) => {
+          animate(element, [
+            { opacity: .08, transform: "translateY(12px)" },
+            { opacity: 1, transform: "translateY(0)" },
+          ], { duration: 800, delay: index * 80, easing: scrollEase });
+        });
+        groupObserver.unobserve(entry.target);
+      });
+    }, { threshold: .08, rootMargin: "0px 0px 15% 0px" });
+
+    root.current.querySelectorAll("[data-reveal-group]").forEach((element) => groupObserver.observe(element));
+
+    const phoneObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.setAttribute("data-revealed", "true");
+        phoneObserver.unobserve(entry.target);
+      });
+    }, { threshold: .45 });
+
+    root.current.querySelectorAll("[data-phone-reveal]").forEach((element) => phoneObserver.observe(element));
     return () => {
       observer.disconnect();
+      groupObserver.disconnect();
+      phoneObserver.disconnect();
       animations.forEach((animation) => animation.cancel());
     };
   }, []);

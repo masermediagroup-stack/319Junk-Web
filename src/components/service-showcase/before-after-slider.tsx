@@ -206,10 +206,10 @@ export function BeforeAfterSlider({
         aria-label="Comparison position"
         className={cn(
           "service-showcase__ba-handle absolute top-[70%] z-20 md:top-1/2",
-          "flex size-12 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize items-center justify-center md:size-11",
+          "flex size-12 cursor-ew-resize items-center justify-center md:size-11",
           "touch-none",
         )}
-        style={{ left: "50%" }}
+        style={{ left: "50%", transform: "translate3d(-50%, -50%, 0)" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}

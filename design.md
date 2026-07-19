@@ -57,8 +57,13 @@ Meaningful entrances are limited to these moments:
 - Landscape fades while settling from `scale(1.02)` over 900ms.
 - Hero logo fades while settling from `scale(.97)` over 800ms after a 220ms delay.
 - Section introductions rise 20px and fade once over 550ms.
+- Scroll entrances use a measured `cubic-bezier(.3,.35,.4,1)` curve and begin slightly visible at `.08` opacity to avoid a hard flash as content crosses the viewport edge.
+- Selected marketing groups reveal their children from 12px below over 800ms with an 80ms stagger. This is reserved for the Services introduction, About story/process, final conversion block, and footer columns.
+- The Service Showcase settles from `scale(.985)` and 10px below over 950ms. The About brand mark enters once from 18px left and `scale(.985)` over 950ms.
+- Only the FAQ heading receives a 14px rise and fade over 800ms; disclosure rows and answers remain immediately available and do not participate in scroll choreography.
+- The final phone number draws a two-pixel underline from left to right over 650ms the first time it enters the viewport. Reduced-motion users see the underline immediately.
 
-FAQ content, navigation, and frequently used controls remain immediately available. All nonessential movement is removed under `prefers-reduced-motion`. Hover-only effects are gated behind a fine-pointer media query. The service marquee becomes a static horizontal list for reduced-motion users.
+FAQ disclosures, navigation, and frequently used controls remain immediately available. All nonessential movement is removed under `prefers-reduced-motion`. Hover-only effects are gated behind a fine-pointer media query. The service marquee becomes a static horizontal list for reduced-motion users.
 
 ## Components and interaction
 
