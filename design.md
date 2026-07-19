@@ -67,7 +67,7 @@ FAQ disclosures, navigation, and frequently used controls remain immediately ava
 
 ## Components and interaction
 
-Primary buttons invert to ink; secondary buttons stay outlined. CTA labels are intent-specific. Mobile actions use prefilled SMS. Desktop actions use prefilled email when `NEXT_PUBLIC_CONTACT_EMAIL` exists and explicit phone labels when it does not.
+Primary buttons invert to ink; secondary buttons stay outlined. CTA labels are intent-specific. Every `estimate` action opens the phone dialer on mobile and desktop. General and trailer mobile actions use prefilled SMS; their desktop actions use prefilled email when `NEXT_PUBLIC_CONTACT_EMAIL` exists and explicit phone labels when it does not.
 
 The About Facebook link has no resting underline. Only the word “Facebook” receives a one-pixel line that reveals from left to right over 240ms on hover or keyboard focus, without changing layout.
 

@@ -28,6 +28,7 @@ test("keeps business data centralized and production metadata configured", async
   assert.match(config, /NEXT_PUBLIC_CONTACT_EMAIL/);
   assert.match(config, /NEXT_PUBLIC_SITE_URL/);
   assert.match(config, /minimumPrice:\s*140/);
+  assert.match(config, /estimate:\s*{[\s\S]*?mobileHref:\s*siteConfig\.phoneHref,[\s\S]*?desktopHref:\s*siteConfig\.phoneHref,/);
   assert.match(page, /siteConfig\.phoneHref/);
   assert.match(layout, /metadataBase/);
   assert.match(layout, /openGraph/);

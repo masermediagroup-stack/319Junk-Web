@@ -154,6 +154,10 @@ Before publication, local `main` was fast-forwarded to merged PR #2 (`5002e99`).
 
 After the PR #2 synchronization, `npm run lint`, `npm run build`, and `npm test` passed. The test command completed a second production build and both rendered-HTML tests passed.
 
+The estimate-contact follow-up routes every `estimate` CTA directly to `tel:+13194616329` on mobile and desktop. This affects the hero, Residential and Commercial service panels, and final conversion block through the centralized `contactIntentActions.estimate` record. Trailer-rental and explicit Text actions retain their existing SMS behavior.
+
+The production HTML contains six rendered `estimate` links, all targeting `tel:+13194616329`, with zero estimate links targeting `sms:`. A regression assertion now protects the centralized mobile and desktop phone destinations. `npm run lint`, `npm run build`, and `npm test` passed; the test command completed a second production build and both rendered-HTML tests passed.
+
 ## Launch blockers and limitations
 
 - Add the verified owner email to `NEXT_PUBLIC_CONTACT_EMAIL` if desktop email actions are desired.

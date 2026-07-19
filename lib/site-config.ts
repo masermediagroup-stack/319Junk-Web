@@ -42,8 +42,8 @@ export const contactIntentActions: Record<ContactIntent, ContactAction> = {
   estimate: {
     label: "Get a free estimate",
     phoneFallbackLabel: "Call for a free estimate",
-    mobileHref: siteConfig.smsRemovalHref,
-    desktopHref: mailHref("Junk-removal estimate request", sms.removal),
+    mobileHref: siteConfig.phoneHref,
+    desktopHref: siteConfig.phoneHref,
   },
   general: {
     label: "Ask about a job",
