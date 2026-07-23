@@ -36,7 +36,7 @@ export default function Home() {
         <main id="main">
           <section className="hero section-pad" aria-labelledby="hero-title">
             <div className="hero-media" aria-hidden="true">
-              <Image className="hero-landscape" data-hero-landscape src="/images/iowa-cornfield-hero.jpg" alt="" width={2160} height={1388} sizes="100vw" priority />
+              <Image className="hero-landscape" data-hero-landscape src="/images/iowa-cornfield-hero.jpg" alt="" width={2160} height={1388} sizes="100vw" quality={70} priority fetchPriority="high" />
             </div>
             <div className="container hero-grid">
               <div className="hero-copy" data-hero-copy>

@@ -41,6 +41,8 @@ export function ServicePanel({
   const showComparison = shouldShowComparison(item, imageMode);
   const enterDuration = reduce ? 0 : Math.min(panelDurationMs, 280) / 1000;
   const exitDuration = reduce ? 0 : Math.min(panelDurationMs * .68, 190) / 1000;
+  const mediaEnterDuration = reduce ? 0 : 0.42;
+  const mediaExitDuration = reduce ? 0 : 0.34;
   const ease = [0.23, 1, 0.32, 1] as const;
 
   return (
@@ -59,14 +61,13 @@ export function ServicePanel({
             <motion.div
               key={`media-${item.id}`}
               className="absolute inset-0 will-change-transform"
-              initial={reduce ? false : { opacity: 0, y: "3%" }}
-              animate={{ opacity: 1, y: "0%" }}
+              initial={reduce ? false : { y: "100%" }}
+              animate={{ y: "0%" }}
               exit={{
-                opacity: 0,
-                y: reduce ? "0%" : "-1.5%",
-                transition: { duration: exitDuration, ease },
+                y: reduce ? "0%" : "-100%",
+                transition: { duration: mediaExitDuration, ease },
               }}
-              transition={{ duration: enterDuration, ease }}
+              transition={{ duration: mediaEnterDuration, ease }}
             >
               {showComparison && item.comparison ? (
                 <BeforeAfterSlider

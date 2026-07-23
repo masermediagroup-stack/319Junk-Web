@@ -166,12 +166,6 @@ export function MotionController({ children }: { children: ReactNode }) {
       ], { duration: 700, delay: 120 + index * 160, easing: ease });
     });
 
-    const landscape = root.current.querySelector("[data-hero-landscape]");
-    if (landscape) animate(landscape, [
-      { opacity: 0, scale: 1.02 },
-      { opacity: 1, scale: 1 },
-    ], { duration: 900, easing: ease });
-
     const logo = root.current.querySelector("[data-hero-logo]");
     if (logo) animate(logo, [
       { opacity: 0, scale: .97 },
