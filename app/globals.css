@@ -57,6 +57,7 @@ section[id] { scroll-margin-top: 72px; }
 
 .site-header { position: sticky; z-index: 100; top: 0; height: 72px; display: flex; align-items: stretch; justify-content: space-between; background: var(--ink); color: var(--paper); border-bottom: 1px solid #343434; }
 .brand { width: 168px; display: grid; place-items: center; border-right: 1px solid #343434; padding: 8px 24px; overflow: hidden; }
+.brand-mark { display: grid; place-items: center; width: 100%; height: 100%; }
 .brand img { width: auto; height: 48px; max-width: 100%; }
 .header-phone { min-width: 240px; display: flex; align-items: center; justify-content: center; gap: 9px; margin-left: auto; padding-inline: 20px; border-left: 1px solid #343434; font-size: var(--text-ui); font-weight: var(--weight-medium); font-variant-numeric: tabular-nums; transition: background var(--control-duration), color var(--control-duration), transform var(--press-duration) var(--ease-out); }
 .header-phone-label { display: flex; align-items: center; justify-content: center; gap: 5px; }
