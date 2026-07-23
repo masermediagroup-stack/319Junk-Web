@@ -23,9 +23,31 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLElement>(null);
+  const brandMarkRef = useRef<HTMLSpanElement>(null);
   const restoreFocusRef = useRef<HTMLElement | null>(null);
 
   const closeMenu = () => setOpen(false);
+
+  useLayoutEffect(() => {
+    if (!brandMarkRef.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    const animation = brandMarkRef.current.animate(
+      [
+        { opacity: 0, transform: "translateY(100%)" },
+        { opacity: 1, transform: "translateY(0)" },
+      ],
+      {
+        duration: 650,
+        delay: 60,
+        easing: "cubic-bezier(.23,1,.32,1)",
+        fill: "backwards",
+      },
+    );
+
+    return () => animation.cancel();
+  }, []);
 
   useEffect(() => {
     document.body.classList.toggle("menu-open", open);
@@ -74,7 +96,11 @@ export function SiteHeader() {
   }, [open]);
 
   return <header className="site-header">
-    <a className="brand" href="#main" aria-label="319Junk home"><Image src="/brand/319junk-white.svg" alt="319Junk" width={150} height={93} priority /></a>
+    <a className="brand" href="#main" aria-label="319Junk home">
+      <span className="brand-mark" ref={brandMarkRef}>
+        <Image src="/brand/319junk-white.svg" alt="319Junk" width={150} height={93} priority />
+      </span>
+    </a>
     <a className="header-phone" href={siteConfig.phoneHref}><span className="header-phone-label"><SiteIcon className="header-phone-icon" name="phone" size={14} /><span>Call now</span></span><strong>{siteConfig.phoneDisplay}</strong></a>
     <nav className="desktop-nav" aria-label="Main navigation">{siteConfig.navigation.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}<a className="nav-cta" href="#contact">Contact</a></nav>
     <button
