@@ -34,7 +34,7 @@ The mobile menu contains Services, About, and FAQ followed by the Call/Text acti
 
 Document order is Hero, Services, About, FAQ, and Contact. Navigation follows that same sequence.
 
-- Hero: asymmetric landscape and conversion split, with the headline aligned to the logo field. The display heading uses a `.93` line-height ratio. The deck forms two intentional lines on desktop and four shorter lines on mobile. On mobile it occupies approximately one usable viewport beneath the header while keeping both CTAs visible.
+- Hero: asymmetric landscape and conversion split, with the headline aligned to the logo field. The display heading uses a `.93` line-height ratio. The deck forms two intentional lines on desktop and four shorter lines on mobile. On mobile it occupies approximately one usable viewport beneath the header while keeping both CTAs visible. The mobile paper wash starts lighter at the top (`12%` opacity) so more of the Iowa landscape remains visible, then strengthens toward the paper ground.
 - Services: left-stacked introduction and a single Service Showcase. The highlight strip is the page's only perpetual animation.
 - About: split composition with the Iowa phone mark and three unnumbered process rows.
 - FAQ: centered introduction over a constrained disclosure list. FAQ content is immediately available and does not receive an entrance animation.
@@ -56,7 +56,7 @@ Meaningful entrances are limited to these moments:
 - Header brand mark slides up into the clipped nav frame from `translateY(100%)` over 650ms after a 60ms delay. Reduced-motion users see it in place immediately.
 - Hero heading uses a per-letter 3D X-axis flip entrance (`LetterFlipFrame`, 1050ms per glyph, 60ms stagger, `cubic-bezier(0.22, 1, 0.36, 1)`). Reduced-motion users see the static headline immediately.
 - Hero deck and CTAs rise 24px over 700ms in a top-to-bottom sequence after the heading. The sequence begins after 120ms and uses a 160ms stagger.
-- Landscape fades while settling from `scale(1.02)` over 900ms.
+- Landscape fades in while settling from `scale(1.02)` over 900ms via CSS (`hero-landscape-in`). Reduced-motion users see the image at full opacity immediately.
 - Hero logo fades while settling from `scale(.97)` over 800ms after a 220ms delay.
 - Section introductions rise 20px and fade once over 550ms.
 - Scroll entrances use a measured `cubic-bezier(.3,.35,.4,1)` curve and begin slightly visible at `.08` opacity to avoid a hard flash as content crosses the viewport edge.
@@ -75,7 +75,7 @@ The About Facebook link has no resting underline. Only the word “Facebook” r
 
 The mobile menu remains mounted so opening and closing can reverse cleanly. The two-line hamburger uses interruptible CSS transforms. The menu locks body scrolling, moves focus to the first link, contains Tab navigation, closes with Escape or navigation, and restores focus to the trigger.
 
-The Service Showcase keeps a square tab row, a single editorial image field, and a compact copy panel. Pointer changes use a zero-bounce shared-layout spring under 300ms. Arrow keys plus Home and End update selection without smooth scrolling or panel choreography. Panel changes use a short concurrent opacity and 3 percent vertical transition, with faster exits. Showcase CTAs act directly instead of scrolling to Contact.
+The Service Showcase keeps a square tab row, a single editorial image field, and a compact copy panel. Pointer changes use a zero-bounce shared-layout spring under 300ms. Arrow keys plus Home and End update selection without smooth scrolling or panel choreography. Media changes slide the incoming image up from below the clipped frame (`y: 100%` → `0%`, 420ms) while the outgoing image exits upward (`y: -100%`, 340ms). Copy still uses a short concurrent opacity and 3 percent vertical transition, with faster exits. Showcase CTAs act directly instead of scrolling to Contact.
 
 Residential and Commercial use matched, owner-approved before-and-after image pairs. The comparison slider updates its clip, divider, handle, and ARIA values directly in the DOM. Pointer capture is preserved, pointer movement is limited to one update per animation frame, and keyboard control supports Arrow keys, Shift increments, Home, and End.
 

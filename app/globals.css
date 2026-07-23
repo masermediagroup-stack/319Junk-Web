@@ -71,7 +71,19 @@ section[id] { scroll-margin-top: 72px; }
 .hero { position: relative; min-height: calc(100dvh - 72px); display: grid; align-items: center; overflow: hidden; isolation: isolate; background: var(--paper); }
 .hero-media { position: absolute; z-index: 0; inset: 0; overflow: hidden; pointer-events: none; }
 .hero-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgb(254 254 254 / 5%) 0%, rgb(254 254 254 / 18%) 52%, var(--paper) 100%), linear-gradient(to right, rgb(254 254 254 / 97%) 0%, rgb(254 254 254 / 84%) 40%, rgb(254 254 254 / 20%) 72%); }
-.hero-landscape { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: center; }
+.hero-landscape {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+  transform: scale(1.02);
+  animation: hero-landscape-in 900ms cubic-bezier(.23, 1, .32, 1) forwards;
+}
+@keyframes hero-landscape-in {
+  to { opacity: 1; transform: scale(1); }
+}
 .hero-grid { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(340px, .82fr); column-gap: clamp(48px, 5.5vw, 88px); align-items: center; }
 .hero-copy { max-width: 640px; }
 .hero-copy h1 { margin: 0 0 28px; max-width: 900px; line-height: .93; }
@@ -206,7 +218,7 @@ section[id] { scroll-margin-top: 72px; }
   .brand img { width: auto; height: 44px; }
   .mobile-nav { inset: 70px 0 0; }
   .hero { min-height: max(370px, calc(100dvh - 270px)); padding-block: clamp(32px, 7dvh, 54px); }
-  .hero-media::after { background: linear-gradient(to bottom, rgb(254 254 254 / 42%) 0%, rgb(254 254 254 / 70%) 52%, var(--paper) 100%); }
+  .hero-media::after { background: linear-gradient(to bottom, rgb(254 254 254 / 12%) 0%, rgb(254 254 254 / 48%) 52%, var(--paper) 100%); }
   .hero-landscape { object-position: 58% center; }
   .hero-copy { max-width: none; text-align: center; }
   .hero-copy h1 { margin-bottom: 22px; }
@@ -253,6 +265,7 @@ section[id] { scroll-margin-top: 72px; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  .hero-landscape { opacity: 1; transform: none; animation: none; }
   .trust-strip { overflow-x: auto; }
   .trust-track { animation: none; will-change: auto; }
   .trust-group + .trust-group { display: none; }
