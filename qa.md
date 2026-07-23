@@ -10,6 +10,14 @@ Validated July 23, 2026.
 - [x] `npm test`: 2 tests passed, 0 failed
 - [x] `git diff --check`
 
+### Hero load + service slide-up (July 23, 2026)
+
+- Recompressed the hero JPEG from ~2.1MB to ~270KB at the same 2160×1388 dimensions; hero `Image` now uses `quality={70}` and `fetchPriority="high"`.
+- Landscape fade-in is CSS-driven (`hero-landscape-in`, 900ms from `opacity: 0` / `scale(1.02)`); reduced-motion users see the image immediately.
+- Mobile hero paper wash top opacity reduced from `42%` to `12%` so more of the field shows through.
+- Service Showcase media now slides up into the clipped frame on pointer tab changes (`y: 100%` → `0%`) with preload for all service images.
+- Lint, production build, and rendered-HTML tests all passed after the change.
+
 Hero title entrance now uses `LetterFlipFrame` (per-letter X-axis flip, 1050ms, 60ms stagger) via `components/hero-title.tsx`. The previous whole-heading `data-hero-sequence` rise was removed from the `h1` so the flip owns that entrance; deck and CTAs keep the sequenced rise. Reduced-motion falls back to a static headline. The header brand mark slides up into the clipped nav frame over 650ms. Lint, production build, and rendered-HTML tests all passed after the change.
 
 ## Prior validation (July 19, 2026)
