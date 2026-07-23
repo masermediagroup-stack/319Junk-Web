@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { FAQList, MotionController, SiteHeader } from "@/components/interactive";
 import { ContactActions } from "@/components/contact-actions";
+import { HeroTitle } from "@/components/hero-title";
 import { SiteIcon } from "@/components/site-icon";
 import { ServiceShowcase } from "@/src/components/service-showcase";
 import { faqItems, siteConfig } from "@/lib/site-config";
@@ -39,7 +40,7 @@ export default function Home() {
             </div>
             <div className="container hero-grid">
               <div className="hero-copy" data-hero-copy>
-                <h1 id="hero-title" data-hero-sequence>You call,<br /><span>We haul!</span></h1>
+                <HeroTitle />
                 <p className="hero-deck" data-hero-sequence>
                   <span>Junk removal for homes,</span>{" "}
                   <span>businesses, and industrial properties.</span>{" "}

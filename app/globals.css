@@ -74,6 +74,14 @@ section[id] { scroll-margin-top: 72px; }
 .hero-grid { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(340px, .82fr); column-gap: clamp(48px, 5.5vw, 88px); align-items: center; }
 .hero-copy { max-width: 640px; }
 .hero-copy h1 { margin: 0 0 28px; max-width: 900px; line-height: .93; }
+.letter-flip-frame { display: block; perspective-origin: 50% 50%; }
+.letter-flip-line { display: block; }
+.letter-flip-char {
+  display: inline-block;
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
 .hero-deck { max-width: 58ch; margin-bottom: 0; font-size: var(--text-body-lg); line-height: 1.55; color: var(--ink); }
 .hero-deck span:nth-child(2)::after { content: "\A"; white-space: pre; }
 .hero-mark { display: grid; place-items: center; min-width: 0; transform: translateY(-28px); }

@@ -53,7 +53,8 @@ The layout becomes single-column according to content needs near 1000px. Mobile 
 
 Meaningful entrances are limited to these moments:
 
-- Hero content rises 24px over 700ms in a top-to-bottom sequence: heading, deck, primary CTA, then secondary CTA. The sequence begins after 120ms and uses a 160ms stagger.
+- Hero heading uses a per-letter 3D X-axis flip entrance (`LetterFlipFrame`, 1050ms per glyph, 60ms stagger, `cubic-bezier(0.22, 1, 0.36, 1)`). Reduced-motion users see the static headline immediately.
+- Hero deck and CTAs rise 24px over 700ms in a top-to-bottom sequence after the heading. The sequence begins after 120ms and uses a 160ms stagger.
 - Landscape fades while settling from `scale(1.02)` over 900ms.
 - Hero logo fades while settling from `scale(.97)` over 800ms after a 220ms delay.
 - Section introductions rise 20px and fade once over 550ms.
