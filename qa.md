@@ -10,7 +10,7 @@ Validated July 23, 2026.
 - [x] `npm test`: 2 tests passed, 0 failed
 - [x] `git diff --check`
 
-Hero title entrance now uses `LetterFlipFrame` (per-letter X-axis flip, 1050ms, 60ms stagger) via `components/hero-title.tsx`. The previous whole-heading `data-hero-sequence` rise was removed from the `h1` so the flip owns that entrance; deck and CTAs keep the sequenced rise. Reduced-motion falls back to a static headline. Lint, production build, and rendered-HTML tests all passed after the change.
+Hero title entrance now uses `LetterFlipFrame` (per-letter X-axis flip, 1050ms, 60ms stagger) via `components/hero-title.tsx`. The previous whole-heading `data-hero-sequence` rise was removed from the `h1` so the flip owns that entrance; deck and CTAs keep the sequenced rise. Reduced-motion falls back to a static headline. The header brand mark slides up into the clipped nav frame over 650ms. Lint, production build, and rendered-HTML tests all passed after the change.
 
 ## Prior validation (July 19, 2026)
 
