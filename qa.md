@@ -10,6 +10,17 @@ Validated July 23, 2026.
 - [x] `npm test`: 2 tests passed, 0 failed
 - [x] `git diff --check`
 
+### Landing-page cleanup (July 23, 2026)
+
+Repo hygiene pass removed confirmed-unused files only:
+
+- Deleted `design-assets/` (concept sheets/prompts), `public/images/loess-hills.jpg`, and unused brand variants `319junk-black.svg` / `319junk-white-numb.svg`.
+- Removed dead `workItems` placeholders and unused Service Showcase studio constants.
+- Moved `src/components/service-showcase` → `components/service-showcase` and updated the page import.
+- Refreshed README, content, project, and research docs to match the live page.
+
+Post-fix verification confirmed every live asset remains on disk and in the prerendered HTML: hero cornfield, white logo, black-numb about mark, black PNG OG image, favicon, and all five `public/services/` photos. Lint, production build, and rendered-HTML tests all passed after the change.
+
 Hero title entrance now uses `LetterFlipFrame` (per-letter X-axis flip, 1050ms, 60ms stagger) via `components/hero-title.tsx`. The previous whole-heading `data-hero-sequence` rise was removed from the `h1` so the flip owns that entrance; deck and CTAs keep the sequenced rise. Reduced-motion falls back to a static headline. The header brand mark slides up into the clipped nav frame over 650ms. Lint, production build, and rendered-HTML tests all passed after the change.
 
 ## Prior validation (July 19, 2026)

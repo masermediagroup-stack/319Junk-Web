@@ -3,7 +3,7 @@ import { FAQList, MotionController, SiteHeader } from "@/components/interactive"
 import { ContactActions } from "@/components/contact-actions";
 import { HeroTitle } from "@/components/hero-title";
 import { SiteIcon } from "@/components/site-icon";
-import { ServiceShowcase } from "@/src/components/service-showcase";
+import { ServiceShowcase } from "@/components/service-showcase";
 import { faqItems, siteConfig } from "@/lib/site-config";
 
 const serviceHighlights = [
