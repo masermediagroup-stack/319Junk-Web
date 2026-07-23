@@ -27,11 +27,11 @@ Do not guess either value. The missing verified email is a launch blocker for em
 
 Brand files live in `public/brand/`. Do not redraw, crop, stretch, or recolor the supplied logo.
 
-The Service Showcase uses owner-supplied 319Junk photography. Residential and Commercial contain matched before/after pairs, and Trailer Rentals contains an approved trailer image. To add or replace project photography:
+The Service Showcase uses owner-supplied 319Junk photography in `public/services/`. Residential and Commercial contain matched before/after pairs, and Trailer Rentals contains an approved trailer image. To add or replace project photography:
 
-1. Add owner-approved images to `public/work/` with descriptive filenames.
-2. Replace the `image` paths and alt text in `src/components/service-showcase/data.ts`; keep service titles, descriptions, and CTA labels in `lib/site-config.ts`.
-3. Confirm both comparison photos show the same project, then replace the relevant `comparison` pair in `src/components/service-showcase/data.ts`. The reusable slider is `src/components/service-showcase/before-after-slider.tsx`.
+1. Add owner-approved images to `public/services/` with descriptive filenames.
+2. Replace the `image` paths and alt text in `components/service-showcase/data.ts`; keep service titles, descriptions, and CTA labels in `lib/site-config.ts`.
+3. Confirm both comparison photos show the same project, then replace the relevant `comparison` pair in `components/service-showcase/data.ts`. The reusable slider is `components/service-showcase/before-after-slider.tsx`.
 4. Add factual alt text, image dimensions, and responsive `sizes`.
 
 ## Deployment and domain

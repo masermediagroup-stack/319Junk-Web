@@ -1,3 +1,5 @@
+import type { ContactIntent } from "@/lib/site-config";
+
 export type ServiceMedia = {
   src: string;
   alt: string;
@@ -33,4 +35,3 @@ export type ServiceShowcaseProps = {
   imageMode?: ServiceImageMode;
   className?: string;
 };
-import type { ContactIntent } from "@/lib/site-config";
