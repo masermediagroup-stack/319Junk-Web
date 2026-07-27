@@ -1,6 +1,6 @@
 # Quality assurance
 
-Validated July 23, 2026.
+Validated July 27, 2026.
 
 ## Automated checks
 
@@ -10,7 +10,21 @@ Validated July 23, 2026.
 - [x] `npm test`: 2 tests passed, 0 failed
 - [x] `git diff --check`
 
-Hero title entrance now uses `LetterFlipFrame` (per-letter X-axis flip, 1050ms, 60ms stagger) via `components/hero-title.tsx`. The previous whole-heading `data-hero-sequence` rise was removed from the `h1` so the flip owns that entrance; deck and CTAs keep the sequenced rise. Reduced-motion falls back to a static headline. The header brand mark slides up into the clipped nav frame over 650ms. Lint, production build, and rendered-HTML tests all passed after the change.
+The July 27 dependency update added `@vercel/analytics` 2.0.1. After installation,
+`npm run lint`, `npm run build`, and `npm test` passed; both rendered-HTML tests
+passed.
+
+The July 27 desktop hero-title follow-up ports the local `LetterFlipFrame`
+primitive for “You call, We haul!” with a 600ms x-axis flip, 60ms forward
+stagger, and 800px perspective. The existing rise entrance remains active at
+700px and below. Browser checks at 1440x900 and 390x844 confirmed one semantic
+H1, the correct viewport-specific title treatment, the intended two-line
+desktop composition, zero horizontal overflow, and no console errors.
+`npm run lint`, `npm run build`, and `npm test` passed; both rendered-HTML tests
+passed.
+
+The header brand mark slides up into the clipped nav frame over 650ms.
+Reduced-motion users see both the title and brand mark in place immediately.
 
 ## Prior validation (July 19, 2026)
 
