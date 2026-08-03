@@ -10,6 +10,22 @@ Validated August 2, 2026.
 - [x] `npm test`: 2 tests passed, 0 failed
 - [x] `git diff --check`
 
+### Landing-page cleanup (July 23, 2026)
+
+Repo hygiene pass removed confirmed-unused files only:
+
+- Deleted `design-assets/` (concept sheets/prompts), `public/images/loess-hills.jpg`, and unused brand variants `319junk-black.svg` / `319junk-white-numb.svg`.
+- Removed dead `workItems` placeholders and unused Service Showcase studio constants.
+- Moved `src/components/service-showcase` → `components/service-showcase` and updated the page import.
+- Refreshed README, content, project, and research docs to match the live page.
+
+Post-fix verification confirmed every live asset remains on disk and in the prerendered HTML: hero cornfield, white logo, black-numb about mark, black PNG OG image, favicon, and all five `public/services/` photos. Lint, production build, and rendered-HTML tests all passed after the change.
+
+After merging current `main` on August 3, the cleanup branch retained the
+square search favicon, apex canonical metadata, Analytics dependency, desktop
+hero treatment, and header-logo entrance. Lint, build, and both rendered-HTML
+tests passed on the resolved branch.
+
 The August 2 search-favicon follow-up changes the existing owner-approved logo
 asset to a square 512x512 SVG canvas while preserving the supplied logo paths.
 The document now declares the SVG type and scalable size explicitly. The
