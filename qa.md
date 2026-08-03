@@ -1,6 +1,6 @@
 # Quality assurance
 
-Validated July 27, 2026.
+Validated August 2, 2026.
 
 ## Automated checks
 
@@ -9,6 +9,16 @@ Validated July 27, 2026.
 - [x] `npm run build`
 - [x] `npm test`: 2 tests passed, 0 failed
 - [x] `git diff --check`
+
+The August 2 search-favicon follow-up changes the existing owner-approved logo
+asset to a square 512x512 SVG canvas while preserving the supplied logo paths.
+The document now declares the SVG type and scalable size explicitly. The
+default canonical origin, Open Graph URLs, robots sitemap URL, and structured
+data URL now use `https://319junk.com` when no environment override is present.
+Local rendered-head inspection confirmed the apex canonical URL plus the
+`image/svg+xml` icon declaration with `sizes="any"`; direct SVG inspection
+confirmed a 512x512 root and square viewBox. Lint, build, and both rendered-HTML
+tests passed.
 
 The July 27 dependency update added `@vercel/analytics` 2.0.1. After installation,
 `npm run lint`, `npm run build`, and `npm test` passed; both rendered-HTML tests
@@ -37,8 +47,8 @@ The install removed 153 unused vinext, Vite, Cloudflare, Wrangler, and Drizzle p
 - OpenAI Sites metadata, Sign in with ChatGPT helpers, Cloudflare worker/build integration, unused D1 examples, and generic starter assets were removed.
 - The project remains a single native Next.js App Router application; Vercel Services configuration is neither present nor required.
 - The native production build now prerenders `/`, `/_not-found`, `/robots.txt`, and `/sitemap.xml` successfully.
-- The public production alias is `https://319-junk-web.vercel.app`; it returns HTTP 200 and is the fallback canonical origin when `NEXT_PUBLIC_SITE_URL` is absent.
-- Production deployment `dpl_dVcWEnATNuEFAQBXS2epHenXRXnS` completed with Vercel state `READY`. A post-deploy fetch returned HTTP 200, the expected landing-page title, and canonical URL `https://319-junk-web.vercel.app`.
+- The public production domain is `https://319junk.com`; `https://www.319junk.com` redirects to the apex domain.
+- The Vercel deployment alias remains available, but the apex production domain is the fallback canonical origin when `NEXT_PUBLIC_SITE_URL` is absent.
 - Local `vercel build --prod` completed the application build but Windows blocked Vercel's final local symlink packaging with `EPERM`; the authoritative remote Linux build completed successfully.
 
 ## Responsive visual baseline

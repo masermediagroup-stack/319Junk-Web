@@ -12,7 +12,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: { title: "You Call, We Haul! | 319Junk", description: siteConfig.description, url: "/", siteName: "319Junk", type: "website", images: [{ url: "/brand/319junk-black.png", width: 834, height: 516, alt: "319Junk" }] },
   twitter: { card: "summary_large_image", title: "319Junk", description: siteConfig.description, images: ["/brand/319junk-black.png"] },
-  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml", sizes: "any" }],
+    shortcut: ["/favicon.svg"],
+  },
 };
 
 export const viewport: Viewport = {
