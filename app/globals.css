@@ -95,6 +95,7 @@ section[id] { scroll-margin-top: 72px; }
   transform-style: preserve-3d;
   backface-visibility: hidden;
 }
+.hero-title-mobile { display: none; }
 .hero-deck { max-width: 58ch; margin-bottom: 0; font-size: var(--text-body-lg); line-height: 1.55; color: var(--ink); }
 .hero-deck span:nth-child(2)::after { content: "\A"; white-space: pre; }
 .hero-mark { display: grid; place-items: center; min-width: 0; transform: translateY(-28px); }
@@ -222,6 +223,8 @@ section[id] { scroll-margin-top: 72px; }
   .hero-landscape { object-position: 58% center; }
   .hero-copy { max-width: none; text-align: center; }
   .hero-copy h1 { margin-bottom: 22px; }
+  .hero-title-desktop { display: none; }
+  .hero-title-mobile { display: inline; }
   .hero-deck { max-width: 35ch; margin-inline: auto; font-size: 1rem; line-height: 1.55; }
   .hero-deck span { display: block; }
   .hero-deck span:nth-child(2)::after { content: none; }

@@ -54,8 +54,9 @@ The layout becomes single-column according to content needs near 1000px. Mobile 
 Meaningful entrances are limited to these moments:
 
 - Header brand mark slides up into the clipped nav frame from `translateY(100%)` over 650ms after a 60ms delay. Reduced-motion users see it in place immediately.
-- Hero heading uses a per-letter 3D X-axis flip entrance (`LetterFlipFrame`, 1050ms per glyph, 60ms stagger, `cubic-bezier(0.22, 1, 0.36, 1)`). Reduced-motion users see the static headline immediately.
+- On desktop, the hero heading flips in letter by letter around the x-axis over 600ms per character with a 60ms forward stagger, 800px perspective, and `cubic-bezier(0.22, 1, 0.36, 1)`. Reduced-motion users see the static headline immediately.
 - Hero deck and CTAs rise 24px over 700ms in a top-to-bottom sequence after the heading. The sequence begins after 120ms and uses a 160ms stagger.
+- At 700px and below, the heading retains the original 24px rise over 700ms so the compact layout does not receive per-letter 3D motion.
 - Landscape fades in while settling from `scale(1.02)` over 900ms via CSS (`hero-landscape-in`). Reduced-motion users see the image at full opacity immediately.
 - Hero logo fades while settling from `scale(.97)` over 800ms after a 220ms delay.
 - Section introductions rise 20px and fade once over 550ms.
