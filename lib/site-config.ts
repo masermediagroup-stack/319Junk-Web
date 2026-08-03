@@ -19,7 +19,7 @@ export interface WorkItem { title: string; description: string; image?: string; 
 const phoneDisplay = "319-461-6329";
 const phoneE164 = "+13194616329";
 const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL;
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://319-junk-web.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://319junk.com";
 const sms = {
   general: "Hi 319Junk, I have a question about your services. My location is ____ and I need help with ____.",
   removal: "Hi 319Junk, I’d like to request a junk-removal estimate. My location is ____ and I need removed ____.",
