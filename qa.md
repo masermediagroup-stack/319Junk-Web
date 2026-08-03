@@ -10,6 +10,20 @@ Validated August 2, 2026.
 - [x] `npm test`: 2 tests passed, 0 failed
 - [x] `git diff --check`
 
+### Hero load + service slide-up (July 23, 2026)
+
+- Recompressed the hero JPEG from ~2.1MB to ~270KB at the same 2160×1388 dimensions; hero `Image` now uses `quality={70}` and `fetchPriority="high"`.
+- Landscape fade-in is CSS-driven (`hero-landscape-in`, 900ms from `opacity: 0` / `scale(1.02)`); reduced-motion users see the image immediately.
+- Mobile hero paper wash top opacity reduced from `42%` to `12%` so more of the field shows through.
+- Service Showcase media now slides up into the clipped frame on pointer tab changes (`y: 100%` → `0%`) with preload for all service images.
+- Lint, production build, and rendered-HTML tests all passed after the change.
+
+After merging current `main` again on August 3 following PR #4, the motion
+branch retained the landing-page cleanup and relocated Service Showcase
+components alongside the square search favicon, apex canonical metadata,
+Analytics dependency, desktop-only hero-title flip, and header-logo entrance.
+Lint, build, and both rendered-HTML tests passed on the resolved branch.
+
 ### Landing-page cleanup (July 23, 2026)
 
 Repo hygiene pass removed confirmed-unused files only:

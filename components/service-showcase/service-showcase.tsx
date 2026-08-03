@@ -1,7 +1,7 @@
 "use client";
 
 import { LayoutGroup, useReducedMotion } from "framer-motion";
-import { useId, useState, type CSSProperties } from "react";
+import { useEffect, useId, useState, type CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 import { SS_DEFAULTS } from "./constants";
 import { SERVICE_ITEMS } from "./data";
@@ -38,6 +38,22 @@ export function ServiceShowcase({
 
   const reducedMotion =
     forceReducedMotion || !animationEnabled || !!prefersReduced;
+
+  useEffect(() => {
+    const urls = new Set<string>();
+    for (const item of items) {
+      urls.add(item.image.src);
+      if (item.comparison) {
+        urls.add(item.comparison.before.src);
+        urls.add(item.comparison.after.src);
+      }
+    }
+    urls.forEach((src) => {
+      const image = new window.Image();
+      image.decoding = "async";
+      image.src = src;
+    });
+  }, [items]);
 
   const onChange = (id: string, source: ServiceChangeSource) => {
     setChangeSource(source);
