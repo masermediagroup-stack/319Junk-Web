@@ -4,6 +4,3 @@
 .wrangler/
 dist/
 .openai/
-
-# Design source material is retained locally, not shipped with the website
-design-assets/

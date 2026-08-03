@@ -14,7 +14,6 @@ export interface ContactAction {
 }
 export interface Service { title: string; description: string; contactIntent: ContactIntent }
 export interface FAQItem { question: string; answer: string }
-export interface WorkItem { title: string; description: string; image?: string; beforeImage?: string; afterImage?: string }
 
 const phoneDisplay = "319-461-6329";
 const phoneE164 = "+13194616329";
@@ -72,9 +71,4 @@ export const faqItems: FAQItem[] = [
   { question: "Where do you travel?", answer: "319Junk serves Eastern and Southeast Iowa and travels to jobs. Send your location to confirm service for your property." },
   { question: "How does trailer rental work?", answer: "Call or text with your location and project dates. 319Junk will confirm current availability and rental details directly." },
   { question: "What items can you take?", answer: "Send photos or a description of the items so 319Junk can confirm what can be handled. No unverified accepted-item or prohibited-item list is published here." },
-];
-export const workItems: WorkItem[] = [
-  { title: "Property cleanouts", description: "Future owner-approved project photography" },
-  { title: "Trailer in the field", description: "Future owner-approved trailer photography" },
-  { title: "Before / after", description: "Future verified same-project image pair" },
 ];
