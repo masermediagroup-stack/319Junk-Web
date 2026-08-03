@@ -19,19 +19,23 @@ test("server-renders the complete 319Junk landing page", async () => {
 });
 
 test("keeps business data centralized and production metadata configured", async () => {
-  const [page, layout, config, packageJson] = await Promise.all([
+  const [page, layout, config, packageJson, favicon] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../lib/site-config.ts", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
+    readFile(new URL("../public/favicon.svg", import.meta.url), "utf8"),
   ]);
   assert.match(config, /NEXT_PUBLIC_CONTACT_EMAIL/);
   assert.match(config, /NEXT_PUBLIC_SITE_URL/);
   assert.match(config, /minimumPrice:\s*140/);
+  assert.match(config, /https:\/\/319junk\.com/);
   assert.match(config, /estimate:\s*{[\s\S]*?mobileHref:\s*siteConfig\.phoneHref,[\s\S]*?desktopHref:\s*siteConfig\.phoneHref,/);
   assert.match(page, /siteConfig\.phoneHref/);
   assert.match(layout, /metadataBase/);
   assert.match(layout, /openGraph/);
+  assert.match(layout, /type:\s*"image\/svg\+xml"/);
+  assert.match(favicon, /width="512" height="512" viewBox="0 -158\.755 833\.45 833\.45"/);
   assert.doesNotMatch(page, /SkeletonPreview|codex-preview/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
 });
